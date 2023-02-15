@@ -20,6 +20,6 @@
       "./node_modules/@types"
     ],
 	"rootDir": "./src",
-	"outDir": "./build"
+	"outDir": "./lambda"
   }
 }

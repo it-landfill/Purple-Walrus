@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+	"watch": "tsc -w"
   },
   "author": "Alessandro Benetton, Lorenzo",
   "license": "Apache License",
@@ -12,5 +13,10 @@
     "ask-sdk-core": "^2.7.0",
     "ask-sdk-model": "^1.19.0",
     "aws-sdk": "^2.326.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.13.0",
+    "ask-sdk-local-debug": "^1.1.0",
+    "typescript": "^4.9.5"
   }
 }
