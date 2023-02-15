@@ -2,7 +2,7 @@
 const Alexa = require("ask-sdk-core");
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
-        return (Alexa.getRequestType(handlerInput.requestEnvelope) === "LaunchRequest");
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === "LaunchRequest";
     },
     handle(handlerInput) {
         const speakOutput = "Test skill launch";
@@ -62,7 +62,7 @@ const SessionEndedRequestHandler = {
 /* * The intent reflector is used for interaction model testing and debugging. It will simply repeat the intent the user said. You can create custom handlers for your intents by defining them above, then also adding them to the request handler chain below */
 const IntentReflectorHandler = {
     canHandle(handlerInput) {
-        return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest");
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest";
     },
     handle(handlerInput) {
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
