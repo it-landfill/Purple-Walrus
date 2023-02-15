@@ -60,12 +60,12 @@ localDebugger.listen(portNumber, host, () => {
  * The response is written onto the socket connection.
  */
 
-localDebugger.on('connection', (socket: any) => {
+localDebugger.on('connection', (socket) => {
     console.log(`Connection from: ${socket.remoteAddress}:${socket.remotePort}`);
-    socket.on('data', (data: any) => {
+    socket.on('data', (data) => {
         const body = JSON.parse(data.toString().split(httpBodyDelimeter).pop());
         console.log(`Request envelope: ${JSON.stringify(body)}`);
-        skillInvoker[lambdaHandlerName](body, null, (_invokeErr: any, response: any) => {
+        skillInvoker[lambdaHandlerName](body, null, (_invokeErr, response) => {
             response = JSON.stringify(response);
             console.log(`Response envelope: ${response}`);
             socket.write(`HTTP/1.1 200 OK${httpHeaderDelimeter}Content-Type: application/json;charset=UTF-8${httpHeaderDelimeter}Content-Length: ${response.length}${httpBodyDelimeter}${response}`);
@@ -122,7 +122,7 @@ function getAndValidateSkillInvokerFile() {
  * @param {defaultValue} defaultValue default value of the argument that is returned if the value doesn't exist
  */
 
-function getArgument(argumentName: any, defaultValue: any = undefined) {
+function getArgument(argumentName, defaultValue) {
     const index = process.argv.indexOf(`--${argumentName}`);
     if (index === -1 || typeof process.argv[index + 1] === 'undefined') {
         if (defaultValue === undefined) {
