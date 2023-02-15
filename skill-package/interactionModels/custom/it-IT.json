@@ -1,72 +1,72 @@
 {
-	"interactionModel": {
-	  "languageModel": {
-		"invocationName": "orari nuovo",
-		"intents": [
-		  {
-			"name": "AMAZON.CancelIntent",
-			"samples": []
-		  },
-		  {
-			"name": "AMAZON.HelpIntent",
-			"samples": []
-		  },
-		  {
-			"name": "AMAZON.StopIntent",
-			"samples": []
-		  },
-		  {
-			"name": "AMAZON.NavigateHomeIntent",
-			"samples": []
-		  },
-		  {
-			"name": "AMAZON.FallbackIntent",
-			"samples": []
-		  },
-		  {
-			"name": "NextClassIntent",
-			"slots": [],
-			"samples": [
-			  "Qual è la mia prossima lezione",
-			  "Qual è il mio prossimo corso",
-			  "Prossimo corso",
-			  "Prossima lezione"
-			]
-		  },
-		  {
-			"name": "SearchClassIntent",
-			"slots": [
-			  {
-				"name": "materia",
-				"type": "ClassNames"
-			  }
-			],
-			"samples": [
-			  "Prossima lezione di {materia}",
-			  "Dammi la prossima lezione di {materia}",
-			  "Quando è la prossima lezione di {materia}"
-			]
-		  }
-		],
-		"types": [
-		  {
-			"values": [
-			  {
-				"id": "1",
-				"name": {
-				  "value": "INTERNET OF THINGS"
-				}
-			  },
-			  {
-				"name": {
-				  "value": "BUSINESS INTELLIGENCE"
-				}
-			  }
-			],
-			"name": "ClassNames"
-		  }
-		]
-	  }
-	},
-	"version": "1"
-  }
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "orari nuovo università",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "NextClassIntent",
+          "slots": [],
+          "samples": [
+            "Qual è la mia prossima lezione",
+            "Qual è il mio prossimo corso",
+            "Prossimo corso",
+            "Prossima lezione"
+          ]
+        },
+        {
+          "name": "SearchClassIntent",
+          "slots": [
+            {
+              "name": "materia",
+              "type": "ClassNames"
+            }
+          ],
+          "samples": [
+            "Prossima lezione di {materia}",
+            "Dammi la prossima lezione di {materia}",
+            "Quando è la prossima lezione di {materia}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "id": "1",
+              "name": {
+                "value": "INTERNET OF THINGS"
+              }
+            },
+            {
+              "name": {
+                "value": "BUSINESS INTELLIGENCE"
+              }
+            }
+          ],
+          "name": "ClassNames"
+        }
+      ]
+    }
+  },
+  "version": "2"
+}
