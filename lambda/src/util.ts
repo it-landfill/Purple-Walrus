@@ -5,7 +5,7 @@ const s3SigV4Client = new AWS.S3({
     region: process.env.S3_PERSISTENCE_REGION
 });
 
-module.exports.getS3PreSignedUrl = function getS3PreSignedUrl(s3ObjectKey) {
+module.exports.getS3PreSignedUrl = function getS3PreSignedUrl(s3ObjectKey: any) {
 
     const bucketName = process.env.S3_PERSISTENCE_BUCKET;
     const s3PreSignedUrl = s3SigV4Client.getSignedUrl('getObject', {
