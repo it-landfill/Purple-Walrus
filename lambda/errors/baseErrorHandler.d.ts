@@ -1,3 +1,4 @@
+import Alexa = require("ask-sdk-core");
 /**
  * Generic error handling to capture any syntax or routing errors. If you receive an error
  * stating the request handler chain is not found, you have not implemented a handler for
@@ -5,5 +6,5 @@
  * */
 export declare const ErrorHandler: {
     canHandle(): boolean;
-    handle(handlerInput: any, error: any): any;
+    handle(handlerInput: Alexa.HandlerInput, error: any): import("ask-sdk-model").Response;
 };

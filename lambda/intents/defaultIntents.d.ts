@@ -1,28 +1,29 @@
+import Alexa = require("ask-sdk-core");
 export declare const LaunchRequestHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
 export declare const HelloWorldIntentHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
 export declare const HelpIntentHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
 export declare const CancelAndStopIntentHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
 export declare const FallbackIntentHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
 export declare const SessionEndedRequestHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
 export declare const IntentReflectorHandler: {
-    canHandle(handlerInput: any): boolean;
-    handle(handlerInput: any): any;
+    canHandle(handlerInput: Alexa.HandlerInput): boolean;
+    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
 };
