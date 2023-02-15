@@ -7,11 +7,11 @@ const defaultIntents_3 = require("./intents/defaultIntents");
 const defaultIntents_4 = require("./intents/defaultIntents");
 const defaultIntents_5 = require("./intents/defaultIntents");
 const defaultIntents_6 = require("./intents/defaultIntents");
-const defaultIntents_7 = require("./intents/defaultIntents");
 const baseErrorHandler_1 = require("./errors/baseErrorHandler");
+const IntentsLorenzo_1 = require("./intents/IntentsLorenzo");
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
  * defined are included below. The order matters - they're processed top to bottom
  * */
-exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(defaultIntents_1.LaunchRequestHandler, defaultIntents_2.HelloWorldIntentHandler, defaultIntents_3.HelpIntentHandler, defaultIntents_4.CancelAndStopIntentHandler, defaultIntents_5.FallbackIntentHandler, defaultIntents_6.SessionEndedRequestHandler, defaultIntents_7.IntentReflectorHandler).addErrorHandlers(baseErrorHandler_1.ErrorHandler).lambda();
+exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(IntentsLorenzo_1.IntentsLorenzo.HelloWorldIntentHandler, defaultIntents_1.LaunchRequestHandler, defaultIntents_2.HelpIntentHandler, defaultIntents_3.CancelAndStopIntentHandler, defaultIntents_4.FallbackIntentHandler, defaultIntents_5.SessionEndedRequestHandler, defaultIntents_6.IntentReflectorHandler).addErrorHandlers(baseErrorHandler_1.ErrorHandler).lambda();

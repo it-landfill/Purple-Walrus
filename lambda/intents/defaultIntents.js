@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IntentReflectorHandler = exports.SessionEndedRequestHandler = exports.FallbackIntentHandler = exports.CancelAndStopIntentHandler = exports.HelpIntentHandler = exports.HelloWorldIntentHandler = exports.LaunchRequestHandler = void 0;
+exports.IntentReflectorHandler = exports.SessionEndedRequestHandler = exports.FallbackIntentHandler = exports.CancelAndStopIntentHandler = exports.HelpIntentHandler = exports.LaunchRequestHandler = void 0;
 const Alexa = require("ask-sdk-core");
 exports.LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -9,17 +9,6 @@ exports.LaunchRequestHandler = {
     handle(handlerInput) {
         const speakOutput = "Test skill launch";
         return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
-    }
-};
-exports.HelloWorldIntentHandler = {
-    canHandle(handlerInput) {
-        return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "NextClassIntent");
-    },
-    handle(handlerInput) {
-        const speakOutput = "Hello World!";
-        return (handlerInput.responseBuilder.speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-            .getResponse());
     }
 };
 exports.HelpIntentHandler = {
