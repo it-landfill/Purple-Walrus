@@ -8,6 +8,7 @@ const defaultIntents_4 = require("./intents/defaultIntents");
 const defaultIntents_5 = require("./intents/defaultIntents");
 const defaultIntents_6 = require("./intents/defaultIntents");
 const baseErrorHandler_1 = require("./errors/baseErrorHandler");
+//import {IntentsLorenzo} from "./intents/IntentsLorenzo";
 const IntentsAlessandro_1 = require("./intents/IntentsAlessandro");
 /**
  * This handler acts as the entry point for your skill, routing all request and response

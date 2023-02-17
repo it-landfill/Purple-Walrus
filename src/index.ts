@@ -9,7 +9,7 @@ import {IntentReflectorHandler} from "./intents/defaultIntents";
 
 import {ErrorHandler} from "./errors/baseErrorHandler";
 
-import {IntentsLorenzo} from "./intents/IntentsLorenzo";
+//import {IntentsLorenzo} from "./intents/IntentsLorenzo";
 import {IntentsAlessandro} from "./intents/IntentsAlessandro";
 
 /**
