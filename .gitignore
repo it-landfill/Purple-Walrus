@@ -4,3 +4,5 @@ ask-resources.json
 lambda/node_modules
 /node_modules
 .DS_Store
+
+.skill-package-backup
