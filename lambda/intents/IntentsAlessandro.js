@@ -7,7 +7,7 @@ var IntentsAlessandro;
 (function (IntentsAlessandro) {
     IntentsAlessandro.HelloWorldIntentHandler = {
         canHandle(handlerInput) {
-            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "NextClassIntent");
+            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetWeeklyScheduleIntent");
         },
         handle(handlerInput) {
             const speakOutput = "Hello World!";
