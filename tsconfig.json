@@ -17,8 +17,7 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": [
-      "./node_modules/@types",
-	  "@aws-sdk/client-dynamodb",
+      "./node_modules/@types"
     ],
 	"rootDir": "./src",
 	"outDir": "./lambda"

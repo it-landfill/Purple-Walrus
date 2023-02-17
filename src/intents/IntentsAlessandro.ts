@@ -1,6 +1,6 @@
 import Alexa = require("ask-sdk-core");
 
-import {DynamoDB} from "@aws-sdk/client-dynamodb";
+import AWS = require("aws-sdk");
 
 export module IntentsAlessandro {
 	export const HelloWorldIntentHandler = {
@@ -11,8 +11,8 @@ export module IntentsAlessandro {
 			const speakOutput = "Hello World!";
 
 			const region = process.env.DYNAMODB_PERSISTENCE_REGION || "eu-west-1";
-			const client = new DynamoDB({region});
-			client.listTables({}, (err, data) => {
+			const client = new AWS.DynamoDB({region});
+			client.listTables({}, (err : any, data : any) => {
 				if (err) 
 					console.warn(err, err.stack);
 				else 
