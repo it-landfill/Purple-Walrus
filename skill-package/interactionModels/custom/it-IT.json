@@ -1,72 +1,84 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "orari nuovo università",
-      "intents": [
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.NavigateHomeIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.FallbackIntent",
-          "samples": []
-        },
-        {
-          "name": "NextClassIntent",
-          "slots": [],
-          "samples": [
-            "Qual è la mia prossima lezione",
-            "Qual è il mio prossimo corso",
-            "Prossimo corso",
-            "Prossima lezione"
-          ]
-        },
-        {
-          "name": "SearchClassIntent",
-          "slots": [
-            {
-              "name": "materia",
-              "type": "ClassNames"
-            }
-          ],
-          "samples": [
-            "Prossima lezione di {materia}",
-            "Dammi la prossima lezione di {materia}",
-            "Quando è la prossima lezione di {materia}"
-          ]
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "orari nuovo università",
+            "intents": [{
+                "name": "AMAZON.CancelIntent",
+                "samples": []
+            }, {
+                "name": "AMAZON.HelpIntent",
+                "samples": []
+            }, {
+                "name": "AMAZON.StopIntent",
+                "samples": []
+            }, {
+                "name": "AMAZON.NavigateHomeIntent",
+                "samples": []
+            }, {
+                "name": "AMAZON.FallbackIntent",
+                "samples": []
+            }, {
+                "name": "SearchClassIntent",
+                "slots": [{
+                    "name": "courseName",
+                    "type": "ClassNames"
+                }],
+                "samples": ["Prossima lezione di {courseName}", "Dammi la prossima lezione di {courseName}", "Quando è la prossima lezione di {courseName}"]
+            }, {
+                "name": "AddAttendCourseIntent",
+                "slots": [{
+                    "name": "courseName",
+                    "type": "ClassNames"
+                }],
+                "samples": ["Aggiungi {courseName} ai corsi che seguo", "Aggiungi ai corsi che seguo il corso di {courseName}", "Aggiungi il corso di {courseName}"]
+            }, {
+                "name": "GetSubscribeCourseIntent",
+                "slots": [],
+                "samples": ["A quali lezioni sono iscritto", "Che lezioni seguo", "Dimmi le lezioni che seguo"]
+            }, {
+                "name": "GetWeeklyScheduleIntent",
+                "slots": [{
+                    "name": "timespan",
+                    "type": "AMAZON.DATE"
+                }, {
+                    "name": "courseName",
+                    "type": "ClassNames"
+                }],
+                "samples": [
+                    "Leggi il calendario per {timespan} di {courseName}",
+                    "Leggi il calendario per {timespan}",
+                    "Che lezioni ci sono di {courseName}",
+                    "Che lezioni ci sono di {courseName} {timespan}",
+                    "Leggi il calendario di {courseName} per {timespan}",
+                    "Leggi il calendario per il corso di {courseName} per {timespan}",
+                    "Leggi il calendario di {courseName}",
+                    "Leggi il calendario per il corso di {courseName}",
+                    "Leggi il calendario",
+                    "Che lezioni devo seguire {timespan}",
+                    "Che corsi ho {timespan} "
+                ]
+            }],
+            "types": [{
+                "values": [{
+                    "id": "2022-000-379870--I",
+                    "name": {
+                        "value": "computer vision"
+                    }
+                }, {
+                    "id": "2022-000-343110--I",
+                    "name": {
+                        "value": "internet of things",
+                        "synonyms": ["I.o.t"]
+                    }
+                }, {
+                    "id": "2022-000-380902--I",
+                    "name": {
+                        "value": "business intelligence"
+                    }
+                }],
+                "name": "ClassNames"
+            }]
         }
-      ],
-      "types": [
-        {
-          "values": [
-            {
-              "id": "1",
-              "name": {
-                "value": "INTERNET OF THINGS"
-              }
-            },
-            {
-              "name": {
-                "value": "BUSINESS INTELLIGENCE"
-              }
-            }
-          ],
-          "name": "ClassNames"
-        }
-      ]
-    }
-  },
-  "version": "2"
+    },
+    "version": "3"
 }
