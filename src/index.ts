@@ -9,12 +9,12 @@ import {IntentReflectorHandler} from "./intents/defaultIntents";
 
 import {ErrorHandler} from "./errors/baseErrorHandler";
 
-//import {IntentsLorenzo} from "./intents/IntentsLorenzo";
 import {IntentsAlessandro} from "./intents/IntentsAlessandro";
+import {IntentsLorenzo} from "./intents/IntentsLorenzo";
 
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
  * defined are included below. The order matters - they're processed top to bottom
  * */
-exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(IntentsAlessandro.HelloWorldIntentHandler, LaunchRequestHandler, HelpIntentHandler, CancelAndStopIntentHandler, FallbackIntentHandler, SessionEndedRequestHandler, IntentReflectorHandler).addErrorHandlers(ErrorHandler).lambda();
+exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(IntentsAlessandro.HelloWorldIntentHandler, IntentsLorenzo.HelloWorldIntentHandler, LaunchRequestHandler, HelpIntentHandler, CancelAndStopIntentHandler, FallbackIntentHandler, SessionEndedRequestHandler, IntentReflectorHandler).addErrorHandlers(ErrorHandler).lambda();
