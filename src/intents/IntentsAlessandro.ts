@@ -14,7 +14,7 @@ export module IntentsAlessandro {
 			const client = new AWS.DynamoDB({region});
 			client.listTables({}, (err : any, data : any) => {
 				if (err) 
-					 console.warn(err, err.stack);
+					console.warn(err, err.stack);
 				else 
 					console.warn(data);
 				}
