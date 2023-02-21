@@ -10,7 +10,7 @@ var IntentsLorenzo;
         },
         async handle(handlerInput) {
             const attributesManager = handlerInput.attributesManager;
-            let attributes = { "counter": 5 };
+            let attributes = { "counter": 10 };
             attributesManager.setPersistentAttributes(attributes);
             await attributesManager.savePersistentAttributes();
             const speakOutput = "Hello World!";
