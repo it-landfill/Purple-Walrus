@@ -6,9 +6,13 @@ var IntentsLorenzo;
 (function (IntentsLorenzo) {
     IntentsLorenzo.HelloWorldIntentHandler = {
         canHandle(handlerInput) {
-            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "HelloWorldIntent");
+            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetSubscribeCourseIntent");
         },
-        handle(handlerInput) {
+        async handle(handlerInput) {
+            const attributesManager = handlerInput.attributesManager;
+            let attributes = { "counter": 10 };
+            attributesManager.setPersistentAttributes(attributes);
+            await attributesManager.savePersistentAttributes();
             const speakOutput = "Hello World!";
             return (handlerInput.responseBuilder.speak(speakOutput)
                 //.reprompt('add a reprompt if you want to keep the session open for the user to respond')

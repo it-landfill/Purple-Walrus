@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "orari nuovo università",
+      "invocationName": "orari università",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -117,5 +117,5 @@
       ]
     }
   },
-  "version": "5"
+  "version": "6"
 }
