@@ -6,6 +6,7 @@
           "uri": "arn:aws:lambda:eu-west-1:679518507867:function:1305a842-e155-4424-b2aa-2b814d46452e:Release_0"
         },
         "interfaces": [],
+        "locales": {},
         "regions": {
           "NA": {
             "endpoint": {
