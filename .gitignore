@@ -5,3 +5,4 @@ lambda/node_modules
 .DS_Store
 
 .skill-package-backup
+/docker
