@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoadDataInterceptor = void 0;
 const dbUtils_1 = require("../utilities/dbUtils");
+const customLogger_1 = require("../utilities/customLogger");
 exports.LoadDataInterceptor = {
     async process(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
@@ -15,7 +16,9 @@ exports.LoadDataInterceptor = {
             }
             else {
                 sessionAttributes[key] = undefined;
+                customLogger_1.CustomLogger.verbose("Persistent attributes does not contain " + key + ". Setting to undefined");
             }
+            customLogger_1.CustomLogger.log("Adding " + key + " to session attributes with value " + sessionAttributes[key]);
         }
         //set the session attributes so they're available to your handlers
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);

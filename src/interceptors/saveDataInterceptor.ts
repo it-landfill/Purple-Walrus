@@ -1,5 +1,6 @@
 import Alexa = require("ask-sdk-core");
 import {dbUtils} from "../utilities/dbUtils";
+import {CustomLogger} from "../utilities/customLogger";
 
 // Response Interceptors run after all skill handlers complete, before the response is
 // sent to the Alexa servers.
@@ -11,6 +12,9 @@ export const SaveDataInterceptor = {
         for (let key in persistent) {
 			if (sessionAttributes.hasOwnProperty(key)) {
 				persistent[key] = sessionAttributes[key];
+				CustomLogger.log("Saving " + key + " to persistent attributes with value " + persistent[key]);
+			} else {
+				CustomLogger.verbose("Session attributes does not contain " + key);
 			}
 		}
 

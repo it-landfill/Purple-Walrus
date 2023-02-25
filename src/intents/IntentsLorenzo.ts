@@ -5,7 +5,7 @@ export module IntentsLorenzo {
 	export const HelloWorldIntentHandler = {
 		canHandle(handlerInput : Alexa.HandlerInput) {
 			return (
-				Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetSubscribeCourseIntent"
+				Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "Adefgh"
 			);
 		},
 
@@ -25,4 +25,6 @@ export module IntentsLorenzo {
 				.getResponse());
 		}
 	};
+
+	
 }

@@ -6,7 +6,7 @@ var IntentsLorenzo;
 (function (IntentsLorenzo) {
     IntentsLorenzo.HelloWorldIntentHandler = {
         canHandle(handlerInput) {
-            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetSubscribeCourseIntent");
+            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "Adefgh");
         },
         async handle(handlerInput) {
             const attributesManager = handlerInput.attributesManager;

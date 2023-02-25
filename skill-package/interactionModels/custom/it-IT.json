@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "orari unibo",
+      "invocationName": "orari università",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -38,23 +38,11 @@
           ]
         },
         {
-          "name": "AddAttendCourseIntent",
-          "slots": [
-            {
-              "name": "courseName",
-              "type": "ClassNames"
-            }
-          ],
-          "samples": [
-            "Aggiungi {courseName} ai corsi che seguo",
-            "Aggiungi ai corsi che seguo il corso di {courseName}",
-            "Aggiungi il corso di {courseName}"
-          ]
-        },
-        {
           "name": "GetSubscribeCourseIntent",
           "slots": [],
           "samples": [
+            "A quali corsi sono iscritto",
+            "Che corsi seguo",
             "A quali lezioni sono iscritto",
             "Che lezioni seguo",
             "Dimmi le lezioni che seguo"
@@ -91,7 +79,12 @@
           "slots": [
             {
               "name": "courseName",
-              "type": "ClassNames"
+              "type": "ClassNames",
+              "samples": [
+                "{courseName}",
+                "A {courseName}",
+                "Al corso di {courseName}"
+              ]
             }
           ],
           "samples": [
@@ -130,7 +123,58 @@
           "name": "ClassNames"
         }
       ]
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "SetSubscribeCourseIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "courseName",
+              "type": "ClassNames",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.527967830818.964938621522"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.527967830818.964938621522.621409929057"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Slot.Validation.527967830818.964938621522.621409929057",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Il corso {courseName} non è valido."
+          },
+          {
+            "type": "PlainText",
+            "value": "Il corso specificato non è valido."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.527967830818.964938621522",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "A quale corso vuoi iscriverti?"
+          }
+        ]
+      }
+    ]
   },
-  "version": "8"
+  "version": "16"
 }

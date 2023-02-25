@@ -9,6 +9,7 @@
 			"type": "node",
 			"request": "launch",
 			"program": "${command:ask.debugAdapterPath}",
+			//"program": "${workspaceFolder}/lambda/local-debugger.js",
 			"args": [
 				"--accessToken",
 				"${command:ask.accessToken}",
