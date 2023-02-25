@@ -20,7 +20,7 @@ import {SaveDataInterceptor} from "./interceptors/saveDataInterceptor";
 import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
 
 // Utilities
-import {util} from "./utilities/util";
+import {dbUtils} from "./utilities/dbUtils";
 
 var local = process.env.DYNAMODB_LOCAL;
 let persistenceAdapter: Alexa.PersistenceAdapter;
@@ -28,10 +28,10 @@ if (local === "true") {
 	let options = {
 		port: 8000
 	};
-	let dynamoDBClient = util.getLocalDynamoDBClient(options);
-	persistenceAdapter = util.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
+	let dynamoDBClient = dbUtils.getLocalDynamoDBClient(options);
+	persistenceAdapter = dbUtils.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
 } else {
-	persistenceAdapter = util.getPersistenceAdapter("exampleTable", true);
+	persistenceAdapter = dbUtils.getPersistenceAdapter("exampleTable", true);
 }
 
 /**

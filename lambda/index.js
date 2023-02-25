@@ -18,18 +18,18 @@ const loggingResponseInterceptor_1 = require("./interceptors/loggingResponseInte
 const saveDataInterceptor_1 = require("./interceptors/saveDataInterceptor");
 const loadDataInterceptor_1 = require("./interceptors/loadDataInterceptor");
 // Utilities
-const util_1 = require("./utilities/util");
+const dbUtils_1 = require("./utilities/dbUtils");
 var local = process.env.DYNAMODB_LOCAL;
 let persistenceAdapter;
 if (local === "true") {
     let options = {
         port: 8000
     };
-    let dynamoDBClient = util_1.util.getLocalDynamoDBClient(options);
-    persistenceAdapter = util_1.util.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
+    let dynamoDBClient = dbUtils_1.dbUtils.getLocalDynamoDBClient(options);
+    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
 }
 else {
-    persistenceAdapter = util_1.util.getPersistenceAdapter("exampleTable", true);
+    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("exampleTable", true);
 }
 /**
  * This handler acts as the entry point for your skill, routing all request and response
