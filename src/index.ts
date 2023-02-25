@@ -1,19 +1,26 @@
 import Alexa = require("ask-sdk-core");
 
+// Intents
 import {LaunchRequestHandler} from "./intents/defaultIntents";
 import {HelpIntentHandler} from "./intents/defaultIntents";
 import {CancelAndStopIntentHandler} from "./intents/defaultIntents";
 import {FallbackIntentHandler} from "./intents/defaultIntents";
 import {SessionEndedRequestHandler} from "./intents/defaultIntents";
 import {IntentReflectorHandler} from "./intents/defaultIntents";
-
-import {ErrorHandler} from "./errors/baseErrorHandler";
-
 import {IntentsAlessandro} from "./intents/IntentsAlessandro";
 import {IntentsLorenzo} from "./intents/IntentsLorenzo";
+
+// Error handlers
+import {ErrorHandler} from "./errors/baseErrorHandler";
+
+// Interceptors
+import {LoggingRequestInterceptor} from "./interceptors/loggingRequestInterceptor";
+import {LoggingResponseInterceptor} from "./interceptors/loggingResponseInterceptor";
+import {SaveDataInterceptor} from "./interceptors/saveDataInterceptor";
+import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
+
+// Utilities
 import {util} from "./utilities/util";
-import {LocalisationRequestInterceptor} from "./interceptors/localisationRequestInterceptor";
-import {SaveAttributesResponseInterceptor} from "./interceptors/saveAttributesResponseInterceptor";
 
 var local = process.env.DYNAMODB_LOCAL;
 let persistenceAdapter: Alexa.PersistenceAdapter;
@@ -41,6 +48,7 @@ exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	FallbackIntentHandler,
 	SessionEndedRequestHandler,
 	IntentReflectorHandler
-).addErrorHandlers(ErrorHandler).withPersistenceAdapter(persistenceAdapter).addRequestInterceptors(LocalisationRequestInterceptor).addResponseInterceptors(
-	SaveAttributesResponseInterceptor
+).addErrorHandlers(ErrorHandler).withPersistenceAdapter(persistenceAdapter).addRequestInterceptors(LoadDataInterceptor, LoggingRequestInterceptor).addResponseInterceptors(
+	SaveDataInterceptor,
+	LoggingResponseInterceptor
 ).lambda();
