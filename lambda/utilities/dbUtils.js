@@ -6,6 +6,12 @@ const ask_sdk_dynamodb_persistence_adapter_1 = require("ask-sdk-dynamodb-persist
 const AWS = require("aws-sdk");
 var dbUtils;
 (function (dbUtils) {
+    function getPersistenceDataTemplate() {
+        return {
+            materie: undefined,
+        };
+    }
+    dbUtils.getPersistenceDataTemplate = getPersistenceDataTemplate;
     /**
      * Creates a DynamoDB client that will connect to the local instance
      *

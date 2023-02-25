@@ -3,6 +3,14 @@ import {DynamoDbPersistenceAdapter} from "ask-sdk-dynamodb-persistence-adapter";
 import AWS = require("aws-sdk");
 
 export module dbUtils {
+	export function getPersistenceDataTemplate(): {
+		[key: string]: string | string[] | undefined,
+	} {
+		return {
+			materie: undefined,
+		};
+	}
+
 	/**
 	 * Creates a DynamoDB client that will connect to the local instance
 	 *
@@ -10,7 +18,9 @@ export module dbUtils {
 	 * @param {{"port": number}} options - the port number of the local instance of DynamoDB
 	 * @return {*}  {AWS.DynamoDB}
 	 */
-	export function getLocalDynamoDBClient(options : {"port": number}): AWS.DynamoDB {
+	export function getLocalDynamoDBClient(options : {
+		port: number
+	}): AWS.DynamoDB {
 		//configuration for creating a DynamoDB client that will connect to the local instance
 		const awsConfig = {
 			region: "local",
@@ -22,7 +32,6 @@ export module dbUtils {
 
 		return new AWS.DynamoDB();
 	}
-
 
 	/**
 	 * Creates a DynamoDB persistence adapter

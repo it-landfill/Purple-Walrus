@@ -1,16 +1,18 @@
 import Alexa = require("ask-sdk-core");
+import {dbUtils} from "../utilities/dbUtils";
 
 // Response Interceptors run after all skill handlers complete, before the response is
 // sent to the Alexa servers.
 export const SaveDataInterceptor = {
     async process(handlerInput: Alexa.HandlerInput) {
-        const persistent = {};
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        let persistent = dbUtils.getPersistenceDataTemplate();
 
-		//TODO: Save here the data
-        // save (or not) the past_celebs & visits
-        // persistent.past_celebs = (celeb_tracking) ? sessionAttributes.past_celebs : [];
-        // persistent.visits = sessionAttributes.visits;
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        for (let key in persistent) {
+			if (sessionAttributes.hasOwnProperty(key)) {
+				persistent[key] = sessionAttributes[key];
+			}
+		}
 
 		
         // set and then save the persistent attributes

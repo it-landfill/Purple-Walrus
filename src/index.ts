@@ -29,9 +29,9 @@ if (local === "true") {
 		port: 8000
 	};
 	let dynamoDBClient = dbUtils.getLocalDynamoDBClient(options);
-	persistenceAdapter = dbUtils.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
+	persistenceAdapter = dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
 } else {
-	persistenceAdapter = dbUtils.getPersistenceAdapter("exampleTable", true);
+	persistenceAdapter = dbUtils.getPersistenceAdapter("PurpleWalrus", true);
 }
 
 /**

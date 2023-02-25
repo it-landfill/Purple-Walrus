@@ -26,10 +26,10 @@ if (local === "true") {
         port: 8000
     };
     let dynamoDBClient = dbUtils_1.dbUtils.getLocalDynamoDBClient(options);
-    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
+    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
 }
 else {
-    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("exampleTable", true);
+    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("PurpleWalrus", true);
 }
 /**
  * This handler acts as the entry point for your skill, routing all request and response
