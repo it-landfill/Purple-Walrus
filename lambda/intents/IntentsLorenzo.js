@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IntentsLorenzo = void 0;
 const Alexa = require("ask-sdk-core");
+const slotUtils_1 = require("../utilities/slotUtils");
 var IntentsLorenzo;
 (function (IntentsLorenzo) {
     IntentsLorenzo.HelloWorldIntentHandler = {
@@ -10,7 +11,9 @@ var IntentsLorenzo;
         },
         async handle(handlerInput) {
             const attributesManager = handlerInput.attributesManager;
-            let attributes = { "counter": 10 };
+            let attributes = {
+                counter: 10
+            };
             attributesManager.setPersistentAttributes(attributes);
             await attributesManager.savePersistentAttributes();
             const speakOutput = "Hello World!";
@@ -19,21 +22,24 @@ var IntentsLorenzo;
                 .getResponse());
         }
     };
-    // Lambda function to handle the intent GetSubscribeCourseIntent.
-    // This intent is used to subscribe a user to a course (e.g. "Iscrivimi al corso di Internet of Things.")
+    // Lambda function to handle the intent GetSubscribeCourseIntent. This intent is used to subscribe a user to a course (e.g. "Iscrivimi al corso di
+    // Internet of Things.")
     IntentsLorenzo.SetSubscribeCourseIntentHandler = {
         canHandle(handlerInput) {
             return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "SetSubscribeCourseIntent");
         },
-        async handle(handlerInput) {
-            // Get the course name from the intent slot.
-            const courseName = Alexa.getSlotValue(handlerInput.requestEnvelope, "courseName");
+        handle(handlerInput) {
+            // Get the course name from the slot.
+            const course = slotUtils_1.slotUtils.getSlotValue(handlerInput, "courseName");
+            if (course === undefined)
+                return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").getResponse();
+            const courseName = course.name;
             // Get the user id from the request.
             const userId = Alexa.getUserId(handlerInput.requestEnvelope);
             // Speak output the course name and the user id.
             const speakOutput = `L'utente ${userId} è stato registrato con successo al corso ${courseName}.`;
             // Return the response.
-            return (handlerInput.responseBuilder.speak(speakOutput).getResponse());
+            return handlerInput.responseBuilder.speak(speakOutput).getResponse();
         }
     };
 })(IntentsLorenzo = exports.IntentsLorenzo || (exports.IntentsLorenzo = {}));

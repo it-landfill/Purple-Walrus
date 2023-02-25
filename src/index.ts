@@ -19,7 +19,7 @@ var local = process.env.DYNAMODB_LOCAL;
 let persistenceAdapter: Alexa.PersistenceAdapter;
 if (local === "true") {
 	let options = {
-		port: 3001
+		port: 8000
 	};
 	let dynamoDBClient = util.getLocalDynamoDBClient(options);
 	persistenceAdapter = util.getPersistenceAdapter("exampleTable", true, dynamoDBClient);

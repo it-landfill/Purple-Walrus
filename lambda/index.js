@@ -17,7 +17,7 @@ var local = process.env.DYNAMODB_LOCAL;
 let persistenceAdapter;
 if (local === "true") {
     let options = {
-        port: 3001
+        port: 8000
     };
     let dynamoDBClient = util_1.util.getLocalDynamoDBClient(options);
     persistenceAdapter = util_1.util.getPersistenceAdapter("exampleTable", true, dynamoDBClient);
