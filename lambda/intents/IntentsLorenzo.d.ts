@@ -4,8 +4,4 @@ export declare module IntentsLorenzo {
         canHandle(handlerInput: Alexa.HandlerInput): boolean;
         handle(handlerInput: Alexa.HandlerInput): Promise<import("ask-sdk-model").Response>;
     };
-    const SetSubscribeCourseIntentHandler: {
-        canHandle(handlerInput: Alexa.HandlerInput): boolean;
-        handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
-    };
 }

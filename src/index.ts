@@ -9,6 +9,7 @@ import {SessionEndedRequestHandler} from "./intents/defaultIntents";
 import {IntentReflectorHandler} from "./intents/defaultIntents";
 import {IntentsAlessandro} from "./intents/IntentsAlessandro";
 import {IntentsLorenzo} from "./intents/IntentsLorenzo";
+import {SetSubscribeCourseIntentHandler} from "./intents/SetSubscribeCourseIntentHandler";
 
 // Error handlers
 import {ErrorHandler} from "./errors/baseErrorHandler";
@@ -41,7 +42,8 @@ if (local === "true") {
  * */
 exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	IntentsAlessandro.HelloWorldIntentHandler,
-	IntentsLorenzo.SetSubscribeCourseIntentHandler,
+	//IntentsLorenzo.SetSubscribeCourseIntentHandler,
+	SetSubscribeCourseIntentHandler,
 	LaunchRequestHandler,
 	HelpIntentHandler,
 	CancelAndStopIntentHandler,
