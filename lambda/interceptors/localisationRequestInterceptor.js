@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LocalisationRequestInterceptor = void 0;
+const Alexa2 = require("ask-sdk-core");
+// i18n library dependency, we use it below in a localisation interceptor
+const i18n = require("i18next");
+// i18n strings for all supported locales
+const languageStrings = require("../utilities/languageStrings");
+// This request interceptor will bind a translation function 't' to the handlerInput
+exports.LocalisationRequestInterceptor = {
+    process(handlerInput) {
+        i18n.init({
+            lng: Alexa2.getLocale(handlerInput.requestEnvelope),
+            resources: languageStrings
+        }).then((t) => {
+            handlerInput.t = (...args) => t(...args);
+        });
+    }
+};

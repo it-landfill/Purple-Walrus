@@ -19,4 +19,21 @@ var IntentsLorenzo;
                 .getResponse());
         }
     };
+    // Lambda function to handle the intent GetSubscribeCourseIntent.
+    // This intent is used to subscribe a user to a course (e.g. "Iscrivimi al corso di Internet of Things.")
+    IntentsLorenzo.SetSubscribeCourseIntentHandler = {
+        canHandle(handlerInput) {
+            return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "SetSubscribeCourseIntent");
+        },
+        async handle(handlerInput) {
+            // Get the course name from the intent slot.
+            const courseName = Alexa.getSlotValue(handlerInput.requestEnvelope, "courseName");
+            // Get the user id from the request.
+            const userId = Alexa.getUserId(handlerInput.requestEnvelope);
+            // Speak output the course name and the user id.
+            const speakOutput = `L'utente ${userId} è stato registrato con successo al corso ${courseName}.`;
+            // Return the response.
+            return (handlerInput.responseBuilder.speak(speakOutput).getResponse());
+        }
+    };
 })(IntentsLorenzo = exports.IntentsLorenzo || (exports.IntentsLorenzo = {}));
