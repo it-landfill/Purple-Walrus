@@ -4,6 +4,16 @@
 // console.log("error", error));
 
 export module timetable {
+
+	/**
+	 * Returns the timetable for the given parameters
+	 * @param year 
+	 * @param curricula 
+	 * @param start 
+	 * @param end 
+	 * @param insegnamenti 
+	 * @returns 
+	 */
 	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<object[]> {
 		let params: {
 			start: string;
@@ -18,7 +28,6 @@ export module timetable {
 			anno: year
 		};
 
-		// @ts-ignore
 		let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${params.start}&end=${params.end}&curricula=${params.curricula}&anno=${params.anno}`;
 
 		if (insegnamenti && insegnamenti.length > 0) {

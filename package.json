@@ -11,14 +11,15 @@
   "license": "Apache License",
   "dependencies": {
     "ask-sdk": "^2.6.0",
-    "aws-sdk": "2.637.0",
-    "ask-sdk-dynamodb-persistence-adapter": "^2.9.0",
     "ask-sdk-core": "^2.7.0",
-    "ask-sdk-model": "^1.19.0"
+    "ask-sdk-dynamodb-persistence-adapter": "^2.9.0",
+    "ask-sdk-model": "^1.19.0",
+    "aws-sdk": "^2.1322.0"
   },
   "devDependencies": {
     "@types/node": "^18.13.0",
     "ask-sdk-local-debug": "^1.1.0",
+    "typedoc": "https://github.com/DatenMetzgerX/typedoc/tarball/typescript-2-build",
     "typescript": "^4.9.5"
   }
 }

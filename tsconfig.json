@@ -21,6 +21,5 @@
     ],
 	"rootDir": "./src",
 	"outDir": "./lambda"
-  }, 
-  
+  }
 }
