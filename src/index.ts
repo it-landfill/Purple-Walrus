@@ -9,7 +9,7 @@ import {SessionEndedRequestHandler} from "./intents/defaultIntents";
 import {IntentReflectorHandler} from "./intents/defaultIntents";
 import {IntentsAlessandro} from "./intents/IntentsAlessandro";
 import {IntentsLorenzo} from "./intents/IntentsLorenzo";
-import {SetSubscribeCourseIntentHandler} from "./intents/SetSubscribeCourseIntentHandler";
+import {SetSubscribeCourseIntentHandler} from "./intents/setSubscribeCourseIntentHandler";
 import {GetSubscribeCourseIntentHandler} from "./intents/getSubscribeCourseIntentHandler";
 
 // Error handlers
