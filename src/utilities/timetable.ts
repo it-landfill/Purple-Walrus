@@ -4,15 +4,14 @@
 // console.log("error", error));
 
 export module timetable {
-
 	/**
 	 * Returns the timetable for the given parameters
-	 * @param year 
-	 * @param curricula 
-	 * @param start 
-	 * @param end 
-	 * @param insegnamenti 
-	 * @returns 
+	 * @param year Hardcode for now ("2")
+	 * @param curricula Hardcode for now ("A58-000")
+	 * @param start
+	 * @param end
+	 * @param insegnamenti
+	 * @returns
 	 */
 	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<object[]> {
 		let params: {
