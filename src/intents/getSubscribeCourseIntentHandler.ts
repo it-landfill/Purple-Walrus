@@ -1,5 +1,4 @@
 import Alexa = require("ask-sdk-core");
-import {slotUtils} from "../utilities/slotUtils";
 
 // Lambda function to handle the GetSubscribeCourseIntent.
 // This intent is used to get the course that the user subscribed to (e.g. "Che corsi seguo?")

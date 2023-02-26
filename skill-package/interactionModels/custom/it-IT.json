@@ -93,6 +93,24 @@
             "Iscrivimi a {courseName}",
             "Iscrivimi al corso di {courseName}"
           ]
+        },
+        {
+          "name": "RemoveSubscribeCourseIntent",
+          "slots": [
+            {
+              "name": "courseName",
+              "type": "ClassNames"
+            }
+          ],
+          "samples": [
+            "Togli {courseName} dai miei corsi",
+            "Disiscrivimi da {courseName}",
+            "Elimina {courseName} dai corsi che seguo",
+            "Non seguire più {courseName}",
+            "Smetti di seguire {courseName}",
+            "Dai corsi che seguo elimina il corso di {courseName}",
+            "Rimuovi {courseName} dai corsi che seguo"
+          ]
         }
       ],
       "types": [
@@ -176,5 +194,5 @@
       }
     ]
   },
-  "version": "16"
+  "version": "18"
 }
