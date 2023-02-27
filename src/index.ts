@@ -34,7 +34,7 @@ if (local === "true") {
 	let dynamoDBClient = dbUtils.getLocalDynamoDBClient(options);
 	persistenceAdapter = dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
 } else {
-	persistenceAdapter = dbUtils.getPersistenceAdapter("PurpleWalrus", true);
+	persistenceAdapter = dbUtils.getPersistenceAdapter(process.env.DYNAMODB_PERSISTENCE_TABLE_NAME, false);
 }
 
 /**

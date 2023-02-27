@@ -12,6 +12,7 @@ const IntentsAlessandro_1 = require("./intents/IntentsAlessandro");
 const IntentsLorenzo_1 = require("./intents/IntentsLorenzo");
 const setSubscribeCourseIntentHandler_1 = require("./intents/setSubscribeCourseIntentHandler");
 const getSubscribeCourseIntentHandler_1 = require("./intents/getSubscribeCourseIntentHandler");
+const removeSubscribeCourseIntentHandler_1 = require("./intents/removeSubscribeCourseIntentHandler");
 // Error handlers
 const baseErrorHandler_1 = require("./errors/baseErrorHandler");
 // Interceptors
@@ -31,11 +32,11 @@ if (local === "true") {
     persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
 }
 else {
-    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("PurpleWalrus", true);
+    persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter(process.env.DYNAMODB_PERSISTENCE_TABLE_NAME, false);
 }
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
  * defined are included below. The order matters - they're processed top to bottom
  * */
-exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(IntentsAlessandro_1.IntentsAlessandro.HelloWorldIntentHandler, IntentsLorenzo_1.IntentsLorenzo.RemoveSubscribeCourseIntentHandler, setSubscribeCourseIntentHandler_1.SetSubscribeCourseIntentHandler, getSubscribeCourseIntentHandler_1.GetSubscribeCourseIntentHandler, defaultIntents_1.LaunchRequestHandler, defaultIntents_2.HelpIntentHandler, defaultIntents_3.CancelAndStopIntentHandler, defaultIntents_4.FallbackIntentHandler, defaultIntents_5.SessionEndedRequestHandler, defaultIntents_6.IntentReflectorHandler).addErrorHandlers(baseErrorHandler_1.ErrorHandler).withPersistenceAdapter(persistenceAdapter).addRequestInterceptors(loadDataInterceptor_1.LoadDataInterceptor, loggingRequestInterceptor_1.LoggingRequestInterceptor).addResponseInterceptors(saveDataInterceptor_1.SaveDataInterceptor, loggingResponseInterceptor_1.LoggingResponseInterceptor).lambda();
+exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(IntentsAlessandro_1.IntentsAlessandro.HelloWorldIntentHandler, IntentsLorenzo_1.IntentsLorenzo.HelloWorldIntentHandler, removeSubscribeCourseIntentHandler_1.RemoveSubscribeCourseIntentHandler, setSubscribeCourseIntentHandler_1.SetSubscribeCourseIntentHandler, getSubscribeCourseIntentHandler_1.GetSubscribeCourseIntentHandler, defaultIntents_1.LaunchRequestHandler, defaultIntents_2.HelpIntentHandler, defaultIntents_3.CancelAndStopIntentHandler, defaultIntents_4.FallbackIntentHandler, defaultIntents_5.SessionEndedRequestHandler, defaultIntents_6.IntentReflectorHandler).addErrorHandlers(baseErrorHandler_1.ErrorHandler).withPersistenceAdapter(persistenceAdapter).addRequestInterceptors(loadDataInterceptor_1.LoadDataInterceptor, loggingRequestInterceptor_1.LoggingRequestInterceptor).addResponseInterceptors(saveDataInterceptor_1.SaveDataInterceptor, loggingResponseInterceptor_1.LoggingResponseInterceptor).lambda();
