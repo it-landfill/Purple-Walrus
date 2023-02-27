@@ -32,6 +32,9 @@ if (local === "true") {
     persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
 }
 else {
+    // Typescript gives error since process.env.DYNAMODB_PERSISTENCE_TABLE_NAME can be undefined
+    if (process.env.DYNAMODB_PERSISTENCE_TABLE_NAME === undefined)
+        process.env.DYNAMODB_PERSISTENCE_TABLE_NAME = "PurpleWalrus";
     persistenceAdapter = dbUtils_1.dbUtils.getPersistenceAdapter(process.env.DYNAMODB_PERSISTENCE_TABLE_NAME, false);
 }
 /**
