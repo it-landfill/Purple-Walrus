@@ -85,16 +85,16 @@ export module dbUtils {
 		return new DynamoDbPersistenceAdapter(options);
 	}
 
-
 	/**
 	 * Gets data from DynamoDB.
 	 * Since DynamoDB on AWS does not allow to create new tables, we will save data as a JSON string in a single field using the new table name as the key.
+	 * Note that the function is async
 	 *
 	 * @export
 	 * @param {string} tableName The table name to use as the key
-	 * @return {*}  {(object | undefined)} The data retrieved from DynamoDB
+	 * @return {*}  Promise<{(object | undefined)}> The data retrieved from DynamoDB
 	 */
-	export function getData(tableName : string): object | undefined {
+	export async function getData(tableName : string): Promise < object | undefined > {
 		const client = getDynamoDBClient();
 
 		var params = {
@@ -108,27 +108,34 @@ export module dbUtils {
 
 		CustomLogger.verbose("Getting data from DynamoDB: " + JSON.stringify(params));
 
-		client.getItem(params, function (err, data) {
-			if (err) {
-				CustomLogger.warn("Error while getting data from DynamoDB: " + JSON.stringify(err));
-				console.warn(err, err.stack); // an error occurred
+		let getPromise = await client.getItem(params).promise();
+		if (getPromise.$response.error) {
+			CustomLogger.warn("Error while getting data from DynamoDB: " + JSON.stringify(getPromise.$response.error));
+			console.warn(getPromise.$response.error, getPromise.$response.error.stack); // an error occurred
+			return;
+		} else {
+			if (getPromise.Item === undefined) {
+				CustomLogger.info("No data found in DynamoDB");
 				return;
-			} else {
-				if (data.Item === undefined) {
-					CustomLogger.warn("No data found in DynamoDB");
-					return;
-				}
-
-				let item = AWS.DynamoDB.Converter.unmarshall(data.Item);
-
-				CustomLogger.info("Data retrieved from DynamoDB: " + JSON.stringify(item));
-				return item;
 			}
-		});
-		return ;
+
+			CustomLogger.info("Data retrieved from DynamoDB: " + JSON.stringify(getPromise.Item));
+			return AWS.DynamoDB.Converter.unmarshall(getPromise.Item).attributes;
+		}
 	}
 
-	export function setData(tableName : string, data : object) {
+
+	/**
+	 * Sets data to DynamoDB.
+	 * Since DynamoDB on AWS does not allow to create new tables, we will save data as a JSON string in a single field using the new table name as the key.
+	 * Note that the function is async.
+	 * 
+	 * @export
+	 * @param {string} tableName The table name to use as the key
+	 * @param {object} data The data to save in object format
+	 * @return {*}  {Promise<boolean>}
+	 */
+	export async function setData(tableName : string, data : object): Promise<boolean> {
 		const client = getDynamoDBClient();
 
 		CustomLogger.verbose("Saving data to DynamoDB: " + JSON.stringify(data));
@@ -147,13 +154,15 @@ export module dbUtils {
 
 		CustomLogger.verbose("Setting data to DynamoDB: " + JSON.stringify(params));
 
-		client.putItem(params, function (err, data) {
-			if (err) {
-				CustomLogger.warn("Error while setting data to DynamoDB: " + JSON.stringify(err));
-				console.warn(err, err.stack); // an error occurred
-			} else {
-				CustomLogger.info("Data saved to DynamoDB: " + JSON.stringify(data));
-			}
-		});
+		const putPromise = await client.putItem(params).promise();
+
+		if (putPromise.$response.error) {
+			CustomLogger.warn("Error while setting data to DynamoDB: " + JSON.stringify(putPromise.$response.error));
+			console.warn(putPromise.$response.error, putPromise.$response.error.stack); // an error occurred
+			return false;
+		} else {
+			CustomLogger.info("Data saved to DynamoDB: " + JSON.stringify(data));
+			return true;
+		}
 	}
 }
