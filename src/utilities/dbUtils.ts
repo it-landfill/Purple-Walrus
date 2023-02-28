@@ -100,7 +100,7 @@ export module dbUtils {
 		var params = {
 			Key: {
 				id: {
-					S: tableName
+					S: "00_" + tableName // Add 00_ to save table at the top of the list in the DB
 				}
 			},
 			TableName: getTableName()
@@ -124,12 +124,11 @@ export module dbUtils {
 		}
 	}
 
-
 	/**
 	 * Sets data to DynamoDB.
 	 * Since DynamoDB on AWS does not allow to create new tables, we will save data as a JSON string in a single field using the new table name as the key.
 	 * Note that the function is async.
-	 * 
+	 *
 	 * @export
 	 * @param {string} tableName The table name to use as the key
 	 * @param {object} data The data to save in object format
@@ -141,7 +140,7 @@ export module dbUtils {
 		CustomLogger.verbose("Saving data to DynamoDB: " + JSON.stringify(data));
 
 		let formattedData = {
-			id: tableName,
+			id: "00_" + tableName, // Add 00_ to save table at the top of the list in the DB
 			attributes: data
 		};
 

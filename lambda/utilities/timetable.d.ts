@@ -9,4 +9,12 @@ export declare module timetable {
      * @returns
      */
     function getTimetable(year: string, curricula: string, start: Date, end: Date, insegnamenti?: string[]): Promise<object[]>;
+    /**
+     * Returns the available classes for the current year.
+     * The classes are either loadaed from the database or fetched from the university website if not present or to old.
+     *
+     * @export
+     * @return {*}  {(Promise < object | undefined >)}
+     */
+    function getClassesList(): Promise<object | undefined>;
 }

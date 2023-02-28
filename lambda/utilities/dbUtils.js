@@ -91,7 +91,7 @@ var dbUtils;
         var params = {
             Key: {
                 id: {
-                    S: tableName
+                    S: "00_" + tableName // Add 00_ to save table at the top of the list in the DB
                 }
             },
             TableName: getTableName()
@@ -127,7 +127,7 @@ var dbUtils;
         const client = getDynamoDBClient();
         customLogger_1.CustomLogger.verbose("Saving data to DynamoDB: " + JSON.stringify(data));
         let formattedData = {
-            id: tableName,
+            id: "00_" + tableName,
             attributes: data
         };
         customLogger_1.CustomLogger.verbose("Formatting data to DynamoDB: " + JSON.stringify(formattedData));
