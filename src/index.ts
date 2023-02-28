@@ -25,21 +25,6 @@ import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
 // Utilities
 import {dbUtils} from "./utilities/dbUtils";
 
-var local = process.env.DYNAMODB_LOCAL;
-let persistenceAdapter: Alexa.PersistenceAdapter;
-if (local === "true") {
-	let options = {
-		port: 8000
-	};
-	let dynamoDBClient = dbUtils.getLocalDynamoDBClient(options);
-	persistenceAdapter = dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
-} else {
-	// Typescript gives error since process.env.DYNAMODB_PERSISTENCE_TABLE_NAME can be undefined
-	if (process.env.DYNAMODB_PERSISTENCE_TABLE_NAME === undefined) 
-		process.env.DYNAMODB_PERSISTENCE_TABLE_NAME = "PurpleWalrus";
-	persistenceAdapter = dbUtils.getPersistenceAdapter(process.env.DYNAMODB_PERSISTENCE_TABLE_NAME, false);
-}
-
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
@@ -57,7 +42,7 @@ exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	FallbackIntentHandler,
 	SessionEndedRequestHandler,
 	IntentReflectorHandler
-).addErrorHandlers(ErrorHandler).withPersistenceAdapter(persistenceAdapter).addRequestInterceptors(LoadDataInterceptor, LoggingRequestInterceptor).addResponseInterceptors(
+).addErrorHandlers(ErrorHandler).withPersistenceAdapter(dbUtils.getPersistenceAdapter()).addRequestInterceptors(LoadDataInterceptor, LoggingRequestInterceptor).addResponseInterceptors(
 	SaveDataInterceptor,
 	LoggingResponseInterceptor
 ).lambda();
