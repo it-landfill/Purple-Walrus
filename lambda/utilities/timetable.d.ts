@@ -1,4 +1,10 @@
 export declare module timetable {
+    type ClassElement = {
+        code: string;
+        name: string;
+        year: string;
+        curriculum: string;
+    };
     /**
      * Returns the timetable for the given parameters
      * @param year Hardcode for now ("2")
@@ -16,5 +22,7 @@ export declare module timetable {
      * @export
      * @return {*}  {(Promise < object | undefined >)}
      */
-    function getClassesList(): Promise<object | undefined>;
+    function getClassesList(): Promise<{
+        [key: string]: ClassElement;
+    } | undefined>;
 }

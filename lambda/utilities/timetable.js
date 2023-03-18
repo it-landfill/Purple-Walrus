@@ -21,10 +21,12 @@ var timetable;
             curricula: curricula,
             anno: year
         };
+        customLogger_1.CustomLogger.verbose("Fetching timetable for params: " + JSON.stringify(params));
         let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${params.start}&end=${params.end}&curricula=${params.curricula}&anno=${params.anno}`;
         if (insegnamenti && insegnamenti.length > 0) {
             address += `&insegnamenti=${insegnamenti.join("&insegnamenti=")}`;
         }
+        customLogger_1.CustomLogger.verbose("Fetching timetable using url: " + address);
         const requestOptions = {
             method: "GET",
             redirect: "follow"
@@ -88,7 +90,7 @@ var timetable;
      * @param {string} year The year of the classes to fetch
      * @param {string} curriculum The curriculum of the classes to fetch
      * @return {*}  {Promise < {
-     * 		[key: string]: object;
+     * 		{[key: string]: ClassElement}
      * 	} >}
      */
     async function fetchClassesFromTimetable(year, curriculum) {
@@ -166,7 +168,7 @@ var timetable;
     async function getClassesList() {
         const updateDays = 30;
         let classesList = await dbUtils_1.dbUtils.getData("classes");
-        // Check if clsses exist and has a lastUpdated field
+        // Check if classes exist and has a lastUpdated field
         if (classesList === undefined || !("lastUpdated" in classesList)) {
             const classes = await getAvailableClasses();
             if (classes === undefined)
@@ -193,7 +195,7 @@ var timetable;
             return classes;
         }
         // If we reached here, the class database is valid and updated. return it.
-        return classesList;
+        return classesList["classes"];
     }
     timetable.getClassesList = getClassesList;
 })(timetable = exports.timetable || (exports.timetable = {}));

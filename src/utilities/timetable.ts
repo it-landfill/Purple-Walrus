@@ -211,9 +211,9 @@ export module timetable {
 	export async function getClassesList(): Promise < {[key: string]: ClassElement} | undefined > {
 		const updateDays = 30;
 
-		let classesList = await dbUtils.getData("classes");
+		let classesList: {[key: string]: any} | undefined = await dbUtils.getData("classes");
 
-		// Check if clsses exist and has a lastUpdated field
+		// Check if classes exist and has a lastUpdated field
 		if (classesList === undefined || !("lastUpdated" in classesList)) {
 			const classes = await getAvailableClasses();
 			if (classes === undefined) 
@@ -242,6 +242,6 @@ export module timetable {
 		}
 
 		// If we reached here, the class database is valid and updated. return it.
-		return classesList as {[key: string]: ClassElement};
+		return classesList["classes"] as {[key: string]: ClassElement};
 	}
 }
