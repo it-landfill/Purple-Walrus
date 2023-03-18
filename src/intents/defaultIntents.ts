@@ -5,10 +5,46 @@ export const LaunchRequestHandler = {
 		return Alexa.getRequestType(handlerInput.requestEnvelope) === "LaunchRequest";
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
-		const speakOutput = "Test skill launch";
 
-		return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
-	}
+		let replaceEntityDirective: any = {
+			type: 'Dialog.UpdateDynamicEntities',
+			updateBehavior: 'REPLACE',
+			types: [
+			  {
+				name: 'ClassNames',
+				values: [
+				  {
+					id: '0',
+					name: {
+					  value: 'Scalable clout'
+					}
+				  },
+				  {
+					id: '1',
+					name: {
+					  value: 'Emerging programming paradigms'
+					}
+				  },
+				  {
+					id: '2',
+					name: {
+					  value: 'Laboratorio di making'
+					}
+				  }
+				]
+			  }
+			]
+		  };
+	  
+		  const repeat = 'Come posso aiutarti?';
+		  const speech = 'Benvenuto in Orari Università. ' + repeat;
+	  
+		  return handlerInput.responseBuilder
+			.speak(speech)
+			.reprompt(repeat)
+			.addDirective(replaceEntityDirective)
+			.getResponse();
+		}
 };
 
 export const HelpIntentHandler = {
