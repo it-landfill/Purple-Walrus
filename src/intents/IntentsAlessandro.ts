@@ -22,7 +22,7 @@ export module IntentsAlessandro {
 			// Speak output the course name.
 
 			const speakOutput = `Hai scelto il corso di ` + course.name + `.`;
-			CustomLogger.info("Getting data from DynamoDB: " + JSON.stringify(course));
+			CustomLogger.info("Course data: " + JSON.stringify(course));
 
 			return (handlerInput.responseBuilder.speak(speakOutput)
 			//.reprompt('add a reprompt if you want to keep the session open for the user to respond')
