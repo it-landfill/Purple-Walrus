@@ -17,7 +17,8 @@
         ],
         "indent_style": "tab",
         "indent_size": 1,
-        "wrap_line_length": 150
+        "wrap_line_length": 150,
+		"multiline_ternary": "never"
     },
     "Markdown": {
         "beautifiers": ["Prettier"]

@@ -3,18 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RemoveSubscribeCourseIntentHandler = void 0;
 const Alexa = require("ask-sdk-core");
 const slotUtils_1 = require("../utilities/slotUtils");
-// Lambda function to handle the intent RemoveSubscribeCourseIntent. 
-// This intent is used to unsubscribe a user to a course (e.g. "Togli il corso di Internet of Things dai miei corsi.")
+// Lambda function to handle the intent RemoveSubscribeCourseIntent. This intent is used to unsubscribe a user to a course (e.g. "Togli il corso di
+// Internet of Things dai miei corsi.")
 exports.RemoveSubscribeCourseIntentHandler = {
     canHandle(handlerInput) {
         return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "RemoveSubscribeCourseIntent");
     },
     handle(handlerInput) {
         // Get the course name from the slot.
-        const course = slotUtils_1.slotUtils.getSlotValue(handlerInput, "courseName");
+        const courses = slotUtils_1.slotUtils.getSlotValue(handlerInput, "courseName");
         // If the course name is not valid, return an error.
-        if (course === undefined)
+        if (courses === undefined || courses.length === 0)
             return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();
+        const course = courses[0]; //FIXME: handle multiple courses like modulo 1 / modulo 2
         // Set session attributes to store the course name subscribed by the user.
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         if (sessionAttributes.materie === undefined)

@@ -14,11 +14,13 @@ export module IntentsAlessandro {
 		handle(handlerInput : Alexa.HandlerInput) {
 			// Get the course name from the slot.
 			CustomLogger.info("Getting course name from slot: " + JSON.stringify(Alexa.getSlot(handlerInput.requestEnvelope, "courseName")));
-			const course = slotUtils.getSlotValue(handlerInput, "courseName");
+			const courses = slotUtils.getSlotValue(handlerInput, "courseName");
 			// If the course name is not valid, return an error.
-			if (course === undefined) 
+			if (courses === undefined || courses.length === 0) 
 				return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();
 			
+			const course = courses[0]; //FIXME: handle multiple courses like modulo 1 / modulo 2
+
 			// Speak output the course name.
 
 			const speakOutput = `Hai scelto il corso di ` + course.name + `.`;

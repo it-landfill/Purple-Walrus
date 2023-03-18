@@ -19,7 +19,6 @@ var IntentsLorenzo;
             // Check if course and/or timespan are filled
             if (course === undefined && timespan === undefined) {
                 return handlerInput.responseBuilder.speak("Non hai specificato il corso e il periodo di tempo. Riprova.").getResponse();
-                ;
             }
             else if (course === undefined) {
                 // Handle the case where the user has specified the timespan but not the course
@@ -31,8 +30,7 @@ var IntentsLorenzo;
             // Generate the schedule for the user
             if (materie === undefined || listMaterie === undefined)
                 return handlerInput.responseBuilder.speak("Non sei iscritto a nessun corso. Iscriviti ad un corso per poter leggere il calendario.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();
-            // @ts-ignore FIXME:
-            const gino = listMaterie.classes[materie[0]];
+            const gino = listMaterie[materie[0]];
             customLogger_1.CustomLogger.log(gino);
             // get actual time
             const now = new Date();

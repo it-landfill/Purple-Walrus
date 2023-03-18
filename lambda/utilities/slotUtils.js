@@ -22,28 +22,13 @@ var slotUtils;
             customLogger_1.CustomLogger.warn("Errore imprevisto nel parsing del nome " + slotName + ".");
             return;
         }
-        // Handle the case where the slot does not have dynamic values.
-        if (slot.resolutions.resolutionsPerAuthority.length === 1) {
-            // If the slot is not resolved, return undefined.
-            if (slot.resolutions.resolutionsPerAuthority[0].status.code === "ER_SUCCESS_MATCH") {
-                return {
-                    "name": slot.resolutions.resolutionsPerAuthority[0].values[0].value.name,
-                    "id": slot.resolutions.resolutionsPerAuthority[0].values[0].value.id
-                };
-            }
-            else {
-                customLogger_1.CustomLogger.warn("Impossibile risolvere il valore " + slot.value + " per il campo " + slotName + ".");
-                return;
-            }
-        }
-        // Handle the case where the slot has dynamic values.
         let resolution = resolveStaticAndDynamic(slot.resolutions.resolutionsPerAuthority, slotName);
         // If the slot is not resolved, return undefined.
-        if (resolution.dynamic === undefined && resolution.static === undefined) {
+        if (resolution.dynamic.length == 0 && resolution.static.length == 0) {
             return;
         }
         // If the slot is resolved to a dynamic value, return the dynamic value.
-        if (resolution.dynamic === undefined) {
+        if (resolution.dynamic.length == 0) {
             customLogger_1.CustomLogger.log("Slot " + slotName + " resolved to static value: " + JSON.stringify(resolution.static));
             return resolution.static;
         }
@@ -58,16 +43,29 @@ var slotUtils;
      * @return {*}  {SlotResolution} The resolved slot.
      */
     function resolveStaticAndDynamic(slotResolution, slotName) {
-        let resolution = {};
+        let resolution = {
+            static: [],
+            dynamic: []
+        };
+        // Assume that if there is only one resolution, it is static.
         if (slotResolution.length > 1) {
             const is0Dynamic = slotResolution[0].authority === "amzn1.er-authority.echo-sdk.dynamic";
-            // Check if the slot is dynamic or static and get the value. 
-            if (slotResolution[(is0Dynamic ? 0 : 1)].status.code === "ER_SUCCESS_MATCH") {
-                resolution.dynamic = slotResolution[(is0Dynamic ? 0 : 1)].values[0].value;
+            // Check if the slot is dynamic or static and get the value.
+            if (slotResolution[is0Dynamic ? 0 : 1].status.code === "ER_SUCCESS_MATCH") {
+                slotResolution[is0Dynamic ? 0 : 1].values.forEach((value) => {
+                    resolution.dynamic.push(value.value);
+                });
             }
-            if (slotResolution[(is0Dynamic ? 1 : 0)].status.code === "ER_SUCCESS_MATCH") {
-                resolution.static = slotResolution[(is0Dynamic ? 1 : 0)].values[0].value;
+            if (slotResolution[is0Dynamic ? 1 : 0].status.code === "ER_SUCCESS_MATCH") {
+                slotResolution[is0Dynamic ? 1 : 0].values.forEach((value) => {
+                    resolution.static.push(value.value);
+                });
             }
+        }
+        else {
+            slotResolution[0].values.forEach((value) => {
+                resolution.static.push(value.value);
+            });
         }
         return resolution;
     }
