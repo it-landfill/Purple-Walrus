@@ -111,6 +111,18 @@
             "Dai corsi che seguo elimina il corso di {courseName}",
             "Rimuovi {courseName} dai corsi che seguo"
           ]
+        },
+        {
+          "name": "ResolveClass",
+          "slots": [
+            {
+              "name": "courseName",
+              "type": "ClassNames"
+            }
+          ],
+          "samples": [
+            "Identifica il corso di {courseName}"
+          ]
         }
       ],
       "types": [
@@ -194,5 +206,5 @@
       }
     ]
   },
-  "version": "18"
+  "version": "19"
 }
