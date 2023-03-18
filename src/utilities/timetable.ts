@@ -2,6 +2,13 @@ import {dbUtils} from "./dbUtils";
 import {CustomLogger} from "./customLogger";
 
 export module timetable {
+	export type ClassElement = {
+		code: string;
+		name: string;
+		year: string;
+		curriculum: string;
+	}
+
 	/**
 	 * Returns the timetable for the given parameters
 	 * @param year Hardcode for now ("2")
@@ -25,11 +32,16 @@ export module timetable {
 			anno: year
 		};
 
+
+		CustomLogger.verbose("Fetching timetable for params: " + JSON.stringify(params));
+
 		let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${params.start}&end=${params.end}&curricula=${params.curricula}&anno=${params.anno}`;
 
 		if (insegnamenti && insegnamenti.length > 0) {
 			address += `&insegnamenti=${insegnamenti.join("&insegnamenti=")}`;
 		}
+
+		CustomLogger.verbose("Fetching timetable using url: " + address);
 
 		const requestOptions: RequestInit = {
 			method: "GET",
@@ -107,15 +119,11 @@ export module timetable {
 	 * @param {string} year The year of the classes to fetch
 	 * @param {string} curriculum The curriculum of the classes to fetch
 	 * @return {*}  {Promise < {
-	 * 		[key: string]: object;
+	 * 		{[key: string]: ClassElement}
 	 * 	} >}
 	 */
-	async function fetchClassesFromTimetable(year : string, curriculum : string): Promise < {
-		[key: string]: object;
-	} > {
-		let classes: {
-			[key: string]: object;
-		} = {};
+	async function fetchClassesFromTimetable(year : string, curriculum : string): Promise <{[key: string]: ClassElement}> {
+		let classes: {[key: string]: ClassElement} = {};
 
 		let start = new Date();
 		let end: Date;
@@ -166,17 +174,13 @@ export module timetable {
 	 * 		[key: string]: object;
 	 * 	} | undefined >)}
 	 */
-	async function getAvailableClasses(): Promise < | {
-		[key: string]: object;
-	} | undefined > {
+	async function getAvailableClasses(): Promise < {[key: string]: ClassElement} | undefined > {
 		const curricula = await getAvailableCurricula();
 
 		if (curricula === undefined) 
 			return;
 		
-		let classes: {
-			[key: string]: object;
-		} = {};
+		let classes: {[key: string]: ClassElement} = {};
 		for (let curriculum of curricula) {
 			if ("value" in curriculum) {
 				const cla1 = await fetchClassesFromTimetable("1", curriculum.value as string);
@@ -204,7 +208,7 @@ export module timetable {
 	 * @export
 	 * @return {*}  {(Promise < object | undefined >)}
 	 */
-	export async function getClassesList(): Promise < object | undefined > {
+	export async function getClassesList(): Promise < {[key: string]: ClassElement} | undefined > {
 		const updateDays = 30;
 
 		let classesList = await dbUtils.getData("classes");
@@ -238,6 +242,6 @@ export module timetable {
 		}
 
 		// If we reached here, the class database is valid and updated. return it.
-		return classesList;
+		return classesList as {[key: string]: ClassElement};
 	}
 }

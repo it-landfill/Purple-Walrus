@@ -32,7 +32,7 @@ import {dbUtils} from "./utilities/dbUtils";
  * */
 exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	IntentsAlessandro.HelloWorldIntentHandler,
-	IntentsLorenzo.HelloWorldIntentHandler,
+	IntentsLorenzo.GetWeeklyScheduleIntentHander,
 	RemoveSubscribeCourseIntentHandler,
 	SetSubscribeCourseIntentHandler,
 	GetSubscribeCourseIntentHandler,

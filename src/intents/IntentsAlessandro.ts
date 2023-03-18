@@ -5,7 +5,7 @@ import AWS = require("aws-sdk");
 export module IntentsAlessandro {
 	export const HelloWorldIntentHandler = {
 		canHandle(handlerInput : Alexa.HandlerInput) {
-			return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetWeeklyScheduleIntent");
+			return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "Ajeje");
 		},
 		handle(handlerInput : Alexa.HandlerInput) {
 			const speakOutput = "Hello World!";

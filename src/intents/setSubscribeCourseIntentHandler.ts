@@ -19,8 +19,8 @@ export const SetSubscribeCourseIntentHandler = {
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 		if (sessionAttributes.materie === undefined) 
 			sessionAttributes.materie = [];
-		if (sessionAttributes.materie.indexOf(course.name) === -1) 
-			sessionAttributes.materie.push(course.name);
+		if (sessionAttributes.materie.indexOf(course.id) === -1) 
+			sessionAttributes.materie.push(course.id);
 		else 
 			return handlerInput.responseBuilder.speak(`Sei già iscritto al corso di ${course.name}.`).reprompt("Posso fare altro per te?").getResponse();
 		// Speak output the course name.
