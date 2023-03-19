@@ -95,9 +95,7 @@ var timetable;
      *
      * @param {string} year The year of the classes to fetch
      * @param {string} curriculum The curriculum of the classes to fetch
-     * @return {*}  {Promise < {
-     * 		{[key: string]: ClassElement}
-     * 	} >}
+     * @return {*}  {Promise < ClassDictionary >}
      */
     async function fetchClassesFromTimetable(year, curriculum) {
         let classes = {};
@@ -211,4 +209,34 @@ var timetable;
         return classesList["classes"];
     }
     timetable.getClassesList = getClassesList;
+    /**
+     * Resolves a class ID to a class element.
+     *
+     * @param {ClassDictionary} classes The classes list
+     * @param {string} classID The class ID to resolve
+     * @return {*}  {(ClassElement | undefined)} The class element or undefined if not found
+     */
+    function resolveClassID(classes, classID) {
+        if (!(classID in classes)) {
+            customLogger_1.CustomLogger.warn("Class " + classID + " not found in classes list.");
+            return;
+        }
+        return classes[classID];
+    }
+    /**
+     * Resolves a list of class IDs to a list of class elements.
+     *
+     * @export
+     * @param {string[]} classIDList The list of class IDs to resolve
+     * @return {*}  {Promise<ClassElement[]>} The list of class elements
+     */
+    async function resolveClassIDList(classIDList) {
+        const classes = await getClassesList();
+        if (classes === undefined) {
+            customLogger_1.CustomLogger.warn("Classes list is undefined.");
+            return [];
+        }
+        return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined);
+    }
+    timetable.resolveClassIDList = resolveClassIDList;
 })(timetable = exports.timetable || (exports.timetable = {}));

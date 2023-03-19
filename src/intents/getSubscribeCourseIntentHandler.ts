@@ -1,25 +1,37 @@
 import Alexa = require("ask-sdk-core");
+import {CustomLogger} from "../utilities/customLogger";
+import {timetable} from "../utilities/timetable";
 
-// Lambda function to handle the GetSubscribeCourseIntent.
-// This intent is used to get the course that the user subscribed to (e.g. "Che corsi seguo?")
+// Lambda function to handle the GetSubscribeCourseIntent. This intent is used to get the course that the user subscribed to (e.g. "Che corsi seguo?")
 export const GetSubscribeCourseIntentHandler = {
-    canHandle(handlerInput : Alexa.HandlerInput) {
-        return (
-            Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetSubscribeCourseIntent"
-        );
-    },
-    handle(handlerInput : Alexa.HandlerInput) {
-        // Get the course subscribed by the user from the session attributes
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        const materie = sessionAttributes.materie; //TODO: Questi sono ID, devono diventare nomi dei corsi
+	canHandle(handlerInput : Alexa.HandlerInput) {
+		return (
+			Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "GetSubscribeCourseIntent"
+		);
+	},
+	async handle(handlerInput : Alexa.HandlerInput) {
+		// Get the list of available classes
+		const classes = timetable.getClassesList();
 
-        // If the user has subscribed to a course, return the course name, otherwise return an error message
-        if (materie) {
-            // If lenght of materie is 1, use the singular form of the sentence, otherwise use the plural form
-            const speakOutput = "Sei iscritto " + ((materie.length === 1) ? `alla seguente materia: ` : `alle seguenti materie: `) + materie + ".";
-            return handlerInput.responseBuilder.speak(speakOutput).getResponse();
-        } else {
-            return handlerInput.responseBuilder.speak("Non segui nessun corso.").getResponse();
-        }
-    }
+		// Get the course subscribed by the user from the session attributes
+		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+		const materie = sessionAttributes.materie;
+
+		// If the user has subscribed to a course, return the course name, otherwise return an error message
+		if (materie === undefined) 
+			return handlerInput.responseBuilder.speak("Non segui nessun corso.").getResponse();
+		
+		// Resolve materie
+		const resolvedMaterie = (await timetable.resolveClassIDList(materie)).map((nateria) => nateria.name);
+		if (resolvedMaterie.length === 0) {
+			CustomLogger.warn("There was an error resolving the materie list. " + JSON.stringify(materie));
+			return handlerInput.responseBuilder.speak("Si è verificato un errore, per favore riprova.").getResponse();
+		}
+
+		// If lenght of materie is 1, use the singular form of the sentence, otherwise use the plural form
+		const speakOutput = "Sei iscritto " + (
+		resolvedMaterie.length === 1 ? `alla seguente materia: ` : `alle seguenti materie: `
+	) + resolvedMaterie + ".";
+		return handlerInput.responseBuilder.speak(speakOutput).getResponse();
+	}
 };

@@ -10,6 +10,10 @@ export module timetable {
 		curriculum: string;
 	};
 
+	type ClassDictionary = {
+		[key: string]: ClassElement;
+	};
+
 	/**
 	 * Returns the timetable for the given parameters
 	 * @param year Example: "2"
@@ -31,12 +35,11 @@ export module timetable {
 			end: end.toISOString().split("T")[0],
 			curricula: curricula,
 			anno: year
-		}
-		
+		};
+
 		if (insegnamenti && insegnamenti.length > 0) {
 			params.insegnamenti = insegnamenti.join("&insegnamenti=");
 		}
-
 
 		let config = {
 			method: "get",
@@ -125,16 +128,10 @@ export module timetable {
 	 *
 	 * @param {string} year The year of the classes to fetch
 	 * @param {string} curriculum The curriculum of the classes to fetch
-	 * @return {*}  {Promise < {
-	 * 		{[key: string]: ClassElement}
-	 * 	} >}
+	 * @return {*}  {Promise < ClassDictionary >}
 	 */
-	async function fetchClassesFromTimetable(year : string, curriculum : string): Promise < {
-		[key: string]: ClassElement;
-	} > {
-		let classes: {
-			[key: string]: ClassElement;
-		} = {};
+	async function fetchClassesFromTimetable(year : string, curriculum : string): Promise<ClassDictionary> {
+		let classes: ClassDictionary = {};
 
 		let start = new Date();
 		let end: Date;
@@ -189,17 +186,13 @@ export module timetable {
 	 * 		[key: string]: object;
 	 * 	} | undefined >)}
 	 */
-	async function getAvailableClasses(): Promise < | {
-		[key: string]: ClassElement;
-	} | undefined > {
+	async function getAvailableClasses(): Promise < ClassDictionary | undefined > {
 		const curricula = await getAvailableCurricula();
 
 		if (curricula === undefined) 
 			return;
 		
-		let classes: {
-			[key: string]: ClassElement;
-		} = {};
+		let classes: ClassDictionary = {};
 		for (let curriculum of curricula) {
 			if ("value" in curriculum) {
 				const cla1 = await fetchClassesFromTimetable("1", curriculum.value as string);
@@ -227,9 +220,7 @@ export module timetable {
 	 * @export
 	 * @return {*}  {(Promise < object | undefined >)}
 	 */
-	export async function getClassesList(): Promise < | {
-		[key: string]: ClassElement;
-	} | undefined > {
+	export async function getClassesList(): Promise < ClassDictionary | undefined > {
 		const updateDays = 30;
 
 		let classesList: | {
@@ -265,8 +256,42 @@ export module timetable {
 		}
 
 		// If we reached here, the class database is valid and updated. return it.
-		return classesList["classes"] as {
-			[key: string]: ClassElement;
-		};
+		return classesList["classes"] as ClassDictionary;
+	}
+
+
+	/**
+	 * Resolves a class ID to a class element.
+	 *
+	 * @param {ClassDictionary} classes The classes list
+	 * @param {string} classID The class ID to resolve
+	 * @return {*}  {(ClassElement | undefined)} The class element or undefined if not found
+	 */
+	function resolveClassID(classes : ClassDictionary, classID : string): ClassElement | undefined {
+		if (!(classID in classes)) {
+			CustomLogger.warn("Class " + classID + " not found in classes list.");
+			return;
+		}
+
+		return classes[classID];
+	}
+
+
+	/**
+	 * Resolves a list of class IDs to a list of class elements.
+	 *
+	 * @export
+	 * @param {string[]} classIDList The list of class IDs to resolve
+	 * @return {*}  {Promise<ClassElement[]>} The list of class elements
+	 */
+	export async function resolveClassIDList(classIDList : string[]): Promise<ClassElement[]> {
+		const classes = await getClassesList();
+
+		if (classes === undefined) {
+			CustomLogger.warn("Classes list is undefined.");
+			return [];
+		}
+
+		return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined)as ClassElement[];
 	}
 }
