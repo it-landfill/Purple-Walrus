@@ -1,5 +1,6 @@
 import {dbUtils} from "./dbUtils";
 import {CustomLogger} from "./customLogger";
+import axios from "axios";
 
 export module timetable {
 	export type ClassElement = {
@@ -7,16 +8,16 @@ export module timetable {
 		name: string;
 		year: string;
 		curriculum: string;
-	}
+	};
 
 	/**
 	 * Returns the timetable for the given parameters
-	 * @param year Hardcode for now ("2")
-	 * @param curricula Hardcode for now ("A58-000")
+	 * @param year Example: "2"
+	 * @param curricula Example: "A58-000"
 	 * @param start
 	 * @param end
 	 * @param insegnamenti
-	 * @returns
+	 * @returns {Promise<object[]>} The timetable
 	 */
 	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<object[]> {
 		let params: {
@@ -30,30 +31,31 @@ export module timetable {
 			end: end.toISOString().split("T")[0],
 			curricula: curricula,
 			anno: year
-		};
-
-
-		CustomLogger.verbose("Fetching timetable for params: " + JSON.stringify(params));
-
-		let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${params.start}&end=${params.end}&curricula=${params.curricula}&anno=${params.anno}`;
-
+		}
+		
 		if (insegnamenti && insegnamenti.length > 0) {
-			address += `&insegnamenti=${insegnamenti.join("&insegnamenti=")}`;
+			params.insegnamenti = insegnamenti.join("&insegnamenti=");
 		}
 
-		CustomLogger.verbose("Fetching timetable using url: " + address);
 
-		const requestOptions: RequestInit = {
-			method: "GET",
-			redirect: "follow"
+		let config = {
+			method: "get",
+			maxBodyLength: Infinity,
+			url: "https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json",
+			headers: {},
+			params: params
 		};
 
-		let response = await fetch(address, requestOptions);
-		if (response.ok) {
-			let json = await response.json();
+		CustomLogger.verbose("Fetching timetable with config: " + JSON.stringify(config));
+
+		//  if (insegnamenti && insegnamenti.length > 0) {  	config.params.insegnamenti = insegnamenti.join("&insegnamenti=")}; }
+
+		let response = await axios(config);
+		if (response.status == 200) {
+			let json = response.data;
 			return cleanResults(json);
 		} else {
-			CustomLogger.error("Error while fetching timetable using url: " + address);
+			CustomLogger.error("Error while fetching timetable using config: " + response.config);
 			return [];
 		}
 	}
@@ -99,16 +101,21 @@ export module timetable {
 	 * @return {*}  {(Promise < object[] | undefined >)}
 	 */
 	async function getAvailableCurricula(): Promise < object[] | undefined > {
-		let response = await fetch("https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@available_curricula", {
-			method: "GET",
-			redirect: "follow"
-		});
-		if (response.ok) {
-			let result = await response.json();
+		var config = {
+			method: "get",
+			maxBodyLength: Infinity,
+			url: "https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@available_curricula",
+			headers: {}
+		};
+
+		let response = await axios(config);
+
+		if (response.status == 200) {
+			let result = response.data;
 			CustomLogger.verbose("Available curricula fetched successfully." + JSON.stringify(result));
 			return result;
 		} else {
-			CustomLogger.error("Error while fetching available curricula.");
+			CustomLogger.error("Error while fetching timetable using config: " + response.config);
 			return undefined;
 		}
 	}
@@ -122,8 +129,12 @@ export module timetable {
 	 * 		{[key: string]: ClassElement}
 	 * 	} >}
 	 */
-	async function fetchClassesFromTimetable(year : string, curriculum : string): Promise <{[key: string]: ClassElement}> {
-		let classes: {[key: string]: ClassElement} = {};
+	async function fetchClassesFromTimetable(year : string, curriculum : string): Promise < {
+		[key: string]: ClassElement;
+	} > {
+		let classes: {
+			[key: string]: ClassElement;
+		} = {};
 
 		let start = new Date();
 		let end: Date;
@@ -136,18 +147,22 @@ export module timetable {
 			end = new Date(start.getFullYear(), 8, 1);
 		}
 
-		let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${start.toISOString().split("T")[0]}&end=${end.toISOString().split(
-			"T"
-		)[0]}&curricula=${curriculum}&anno=${year}`;
-
-		const requestOptions: RequestInit = {
-			method: "GET",
-			redirect: "follow"
+		var config = {
+			method: "get",
+			maxBodyLength: Infinity,
+			url: "https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json",
+			headers: {},
+			params: {
+				start: start.toISOString().split("T")[0],
+				end: end.toISOString().split("T")[0],
+				curricula: curriculum,
+				anno: year
+			}
 		};
 
-		let response = await fetch(address, requestOptions);
-		if (response.ok) {
-			let result = await response.json();
+		let response = await axios(config);
+		if (response.status == 200) {
+			let result = response.data;
 
 			for (let el of result) {
 				if (el["extCode"] in classes) 
@@ -161,7 +176,7 @@ export module timetable {
 				};
 			}
 		} else {
-			CustomLogger.error("Error while fetching timetable using url: " + address);
+			CustomLogger.error("Error while fetching timetable using config: " + response.config);
 		}
 
 		return classes;
@@ -174,13 +189,17 @@ export module timetable {
 	 * 		[key: string]: object;
 	 * 	} | undefined >)}
 	 */
-	async function getAvailableClasses(): Promise < {[key: string]: ClassElement} | undefined > {
+	async function getAvailableClasses(): Promise < | {
+		[key: string]: ClassElement;
+	} | undefined > {
 		const curricula = await getAvailableCurricula();
 
 		if (curricula === undefined) 
 			return;
 		
-		let classes: {[key: string]: ClassElement} = {};
+		let classes: {
+			[key: string]: ClassElement;
+		} = {};
 		for (let curriculum of curricula) {
 			if ("value" in curriculum) {
 				const cla1 = await fetchClassesFromTimetable("1", curriculum.value as string);
@@ -208,10 +227,14 @@ export module timetable {
 	 * @export
 	 * @return {*}  {(Promise < object | undefined >)}
 	 */
-	export async function getClassesList(): Promise < {[key: string]: ClassElement} | undefined > {
+	export async function getClassesList(): Promise < | {
+		[key: string]: ClassElement;
+	} | undefined > {
 		const updateDays = 30;
 
-		let classesList: {[key: string]: any} | undefined = await dbUtils.getData("classes");
+		let classesList: | {
+			[key: string]: any;
+		} | undefined = await dbUtils.getData("classes");
 
 		// Check if classes exist and has a lastUpdated field
 		if (classesList === undefined || !("lastUpdated" in classesList)) {
@@ -242,6 +265,8 @@ export module timetable {
 		}
 
 		// If we reached here, the class database is valid and updated. return it.
-		return classesList["classes"] as {[key: string]: ClassElement};
+		return classesList["classes"] as {
+			[key: string]: ClassElement;
+		};
 	}
 }

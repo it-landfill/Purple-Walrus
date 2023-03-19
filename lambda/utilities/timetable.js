@@ -3,16 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.timetable = void 0;
 const dbUtils_1 = require("./dbUtils");
 const customLogger_1 = require("./customLogger");
+const axios_1 = require("axios");
 var timetable;
 (function (timetable) {
     /**
      * Returns the timetable for the given parameters
-     * @param year Hardcode for now ("2")
-     * @param curricula Hardcode for now ("A58-000")
+     * @param year Example: "2"
+     * @param curricula Example: "A58-000"
      * @param start
      * @param end
      * @param insegnamenti
-     * @returns
+     * @returns {Promise<object[]>} The timetable
      */
     async function getTimetable(year, curricula, start, end, insegnamenti) {
         let params = {
@@ -21,23 +22,25 @@ var timetable;
             curricula: curricula,
             anno: year
         };
-        customLogger_1.CustomLogger.verbose("Fetching timetable for params: " + JSON.stringify(params));
-        let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${params.start}&end=${params.end}&curricula=${params.curricula}&anno=${params.anno}`;
         if (insegnamenti && insegnamenti.length > 0) {
-            address += `&insegnamenti=${insegnamenti.join("&insegnamenti=")}`;
+            params.insegnamenti = insegnamenti.join("&insegnamenti=");
         }
-        customLogger_1.CustomLogger.verbose("Fetching timetable using url: " + address);
-        const requestOptions = {
-            method: "GET",
-            redirect: "follow"
+        let config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: "https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json",
+            headers: {},
+            params: params
         };
-        let response = await fetch(address, requestOptions);
-        if (response.ok) {
-            let json = await response.json();
+        customLogger_1.CustomLogger.verbose("Fetching timetable with config: " + JSON.stringify(config));
+        //  if (insegnamenti && insegnamenti.length > 0) {  	config.params.insegnamenti = insegnamenti.join("&insegnamenti=")}; }
+        let response = await (0, axios_1.default)(config);
+        if (response.status == 200) {
+            let json = response.data;
             return cleanResults(json);
         }
         else {
-            customLogger_1.CustomLogger.error("Error while fetching timetable using url: " + address);
+            customLogger_1.CustomLogger.error("Error while fetching timetable using config: " + response.config);
             return [];
         }
     }
@@ -70,17 +73,20 @@ var timetable;
      * @return {*}  {(Promise < object[] | undefined >)}
      */
     async function getAvailableCurricula() {
-        let response = await fetch("https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@available_curricula", {
-            method: "GET",
-            redirect: "follow"
-        });
-        if (response.ok) {
-            let result = await response.json();
+        var config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: "https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@available_curricula",
+            headers: {}
+        };
+        let response = await (0, axios_1.default)(config);
+        if (response.status == 200) {
+            let result = response.data;
             customLogger_1.CustomLogger.verbose("Available curricula fetched successfully." + JSON.stringify(result));
             return result;
         }
         else {
-            customLogger_1.CustomLogger.error("Error while fetching available curricula.");
+            customLogger_1.CustomLogger.error("Error while fetching timetable using config: " + response.config);
             return undefined;
         }
     }
@@ -105,14 +111,21 @@ var timetable;
             // We are in the same school year. End date must be this year
             end = new Date(start.getFullYear(), 8, 1);
         }
-        let address = `https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json?start=${start.toISOString().split("T")[0]}&end=${end.toISOString().split("T")[0]}&curricula=${curriculum}&anno=${year}`;
-        const requestOptions = {
-            method: "GET",
-            redirect: "follow"
+        var config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: "https://corsi.unibo.it/magistrale/informatica/orario-lezioni/@@orario_reale_json",
+            headers: {},
+            params: {
+                start: start.toISOString().split("T")[0],
+                end: end.toISOString().split("T")[0],
+                curricula: curriculum,
+                anno: year
+            }
         };
-        let response = await fetch(address, requestOptions);
-        if (response.ok) {
-            let result = await response.json();
+        let response = await (0, axios_1.default)(config);
+        if (response.status == 200) {
+            let result = response.data;
             for (let el of result) {
                 if (el["extCode"] in classes)
                     continue;
@@ -125,7 +138,7 @@ var timetable;
             }
         }
         else {
-            customLogger_1.CustomLogger.error("Error while fetching timetable using url: " + address);
+            customLogger_1.CustomLogger.error("Error while fetching timetable using config: " + response.config);
         }
         return classes;
     }
