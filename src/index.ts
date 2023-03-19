@@ -42,7 +42,7 @@ exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	FallbackIntentHandler,
 	SessionEndedRequestHandler,
 	IntentReflectorHandler
-).addErrorHandlers(ErrorHandler).withPersistenceAdapter(dbUtils.getPersistenceAdapter()).addRequestInterceptors(LoadDataInterceptor, LoggingRequestInterceptor).addResponseInterceptors(
-	SaveDataInterceptor,
-	LoggingResponseInterceptor
-).lambda();
+).addErrorHandlers(ErrorHandler).withPersistenceAdapter(dbUtils.getPersistenceAdapter()).addRequestInterceptors(
+	LoadDataInterceptor,
+	LoggingRequestInterceptor
+).addResponseInterceptors(SaveDataInterceptor, LoggingResponseInterceptor).lambda();

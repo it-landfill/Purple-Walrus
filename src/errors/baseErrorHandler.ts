@@ -1,4 +1,5 @@
 import Alexa = require("ask-sdk-core");
+import { CustomLogger } from "../utilities/customLogger";
 
 /**
  * Generic error handling to capture any syntax or routing errors. If you receive an error
@@ -11,10 +12,8 @@ export const ErrorHandler = {
 	},
 	handle(handlerInput : Alexa.HandlerInput, error : any) {
 		const speakOutput = "Sorry, I had trouble doing what you asked. Please try again.";
-		console.error(`~~~~ Error handled: ${JSON.stringify(error)}`);
-		console.error(`~~~~ Error handled: ${error}`);
-
-
+		CustomLogger.error(`~~~~ Error handled: ${error}`);
+		
 		return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
 	}
 };
