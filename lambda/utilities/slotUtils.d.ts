@@ -11,7 +11,7 @@ export declare module slotUtils {
      * @return {*}  {({"name": string, "id":string} | undefined)}
      */
     function getSlotValue(handlerInput: Alexa.HandlerInput, slotName: string): {
-        name: string;
         id: string;
-    } | undefined;
+        name: string;
+    }[] | undefined;
 }

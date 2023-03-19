@@ -1,8 +1,8 @@
 import Alexa = require("ask-sdk-core");
 import {slotUtils} from "../utilities/slotUtils";
 
-// Lambda function to handle the intent GetSubscribeCourseIntent. 
-// This intent is used to subscribe a user to a course (e.g. "Iscrivimi al corso di Internet of Things.")
+// Lambda function to handle the intent GetSubscribeCourseIntent. This intent is used to subscribe a user to a course (e.g. "Iscrivimi al corso di
+// Internet of Things.")
 export const SetSubscribeCourseIntentHandler = {
 	canHandle(handlerInput : Alexa.HandlerInput) {
 		return (
@@ -11,18 +11,22 @@ export const SetSubscribeCourseIntentHandler = {
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
 		// Get the course name from the slot.
-		const course = slotUtils.getSlotValue(handlerInput, "courseName");
-        // If the course name is not valid, return an error.
-		if (course === undefined) 
+		const courses = slotUtils.getSlotValue(handlerInput, "courseName");
+		// If the course name is not valid, return an error.
+		if (courses === undefined || courses.length === 0) 
 			return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();
+		
+		const course = courses[0]; //FIXME: handle multiple courses like modulo 1 / modulo 2
+
 		// Set session attributes to store the course name subscribed by the user.
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 		if (sessionAttributes.materie === undefined) 
 			sessionAttributes.materie = [];
-		if (sessionAttributes.materie.indexOf(course.name) === -1) 
-			sessionAttributes.materie.push(course.name);
+		if (sessionAttributes.materie.indexOf(course.id) === -1) 
+			sessionAttributes.materie.push(course.id);
 		else 
 			return handlerInput.responseBuilder.speak(`Sei già iscritto al corso di ${course.name}.`).reprompt("Posso fare altro per te?").getResponse();
+		
 		// Speak output the course name.
 		const speakOutput = `Sei stato registrato con successo al corso ${course.name}.`;
 		// Return the response.

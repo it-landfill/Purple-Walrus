@@ -1,7 +1,7 @@
 import Alexa = require("ask-sdk-core");
 export declare const LaunchRequestHandler: {
     canHandle(handlerInput: Alexa.HandlerInput): boolean;
-    handle(handlerInput: Alexa.HandlerInput): import("ask-sdk-model").Response;
+    handle(handlerInput: Alexa.HandlerInput): Promise<import("ask-sdk-model").Response>;
 };
 export declare const HelpIntentHandler: {
     canHandle(handlerInput: Alexa.HandlerInput): boolean;

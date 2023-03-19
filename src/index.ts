@@ -25,18 +25,6 @@ import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
 // Utilities
 import {dbUtils} from "./utilities/dbUtils";
 
-var local = process.env.DYNAMODB_LOCAL;
-let persistenceAdapter: Alexa.PersistenceAdapter;
-if (local === "true") {
-	let options = {
-		port: 8000
-	};
-	let dynamoDBClient = dbUtils.getLocalDynamoDBClient(options);
-	persistenceAdapter = dbUtils.getPersistenceAdapter("PurpleWalrus", true, dynamoDBClient);
-} else {
-	persistenceAdapter = dbUtils.getPersistenceAdapter(process.env.DYNAMODB_PERSISTENCE_TABLE_NAME, false);
-}
-
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
@@ -44,7 +32,7 @@ if (local === "true") {
  * */
 exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	IntentsAlessandro.HelloWorldIntentHandler,
-	IntentsLorenzo.HelloWorldIntentHandler,
+	IntentsLorenzo.GetWeeklyScheduleIntentHander,
 	RemoveSubscribeCourseIntentHandler,
 	SetSubscribeCourseIntentHandler,
 	GetSubscribeCourseIntentHandler,
@@ -54,7 +42,7 @@ exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	FallbackIntentHandler,
 	SessionEndedRequestHandler,
 	IntentReflectorHandler
-).addErrorHandlers(ErrorHandler).withPersistenceAdapter(persistenceAdapter).addRequestInterceptors(LoadDataInterceptor, LoggingRequestInterceptor).addResponseInterceptors(
-	SaveDataInterceptor,
-	LoggingResponseInterceptor
-).lambda();
+).addErrorHandlers(ErrorHandler).withPersistenceAdapter(dbUtils.getPersistenceAdapter()).addRequestInterceptors(
+	LoadDataInterceptor,
+	LoggingRequestInterceptor
+).addResponseInterceptors(SaveDataInterceptor, LoggingResponseInterceptor).lambda();
