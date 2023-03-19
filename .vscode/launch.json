@@ -7,6 +7,7 @@
 		{
 			"name": "Debug Alexa Skill (Node.js)",
 			"type": "node",
+			"runtimeVersion": "12",
 			"request": "launch",
 			"program": "${command:ask.debugAdapterPath}",
 			//"program": "${workspaceFolder}/lambda/local-debugger.js",
