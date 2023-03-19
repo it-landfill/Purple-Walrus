@@ -22,7 +22,7 @@ export const LaunchRequestHandler = {
 				});
 			}
 
-			replaceEntityDirective = {
+			replaceEntityDirective = { //TODO: Delete dynamic entities on session end
 				type: "Dialog.UpdateDynamicEntities",
 				updateBehavior: "REPLACE",
 				types: [

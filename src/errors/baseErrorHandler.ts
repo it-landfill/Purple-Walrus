@@ -11,7 +11,9 @@ export const ErrorHandler = {
 	},
 	handle(handlerInput : Alexa.HandlerInput, error : any) {
 		const speakOutput = "Sorry, I had trouble doing what you asked. Please try again.";
-		console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
+		console.error(`~~~~ Error handled: ${JSON.stringify(error)}`);
+		console.error(`~~~~ Error handled: ${error}`);
+
 
 		return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
 	}
