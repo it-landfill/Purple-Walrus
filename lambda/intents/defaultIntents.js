@@ -9,7 +9,11 @@ exports.LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "LaunchRequest";
     },
     async handle(handlerInput) {
-        let replaceEntityDirective = {};
+        let replaceEntityDirective = {
+            type: "Dialog.UpdateDynamicEntities",
+            updateBehavior: "REPLACE",
+            types: []
+        };
         const classList = await timetable_1.timetable.getClassesList();
         if (classList) {
             let vals = [];
@@ -21,16 +25,12 @@ exports.LaunchRequestHandler = {
                     }
                 });
             }
-            replaceEntityDirective = {
-                type: "Dialog.UpdateDynamicEntities",
-                updateBehavior: "REPLACE",
-                types: [
-                    {
-                        name: "ClassNames",
-                        values: vals
-                    }
-                ]
-            };
+            replaceEntityDirective.types = [
+                {
+                    name: "ClassNames",
+                    values: vals
+                }
+            ];
         }
         const repeat = "Come posso aiutarti?";
         const speech = "Benvenuto in Orari Università. " + repeat;
@@ -57,7 +57,8 @@ exports.CancelAndStopIntentHandler = {
     }
 };
 /*  * FallbackIntent triggers when a customer says something that doesn’t map to any intents in your skill It must also be defined in the language mod
- * el (if the locale supports it) This handler can be safely added but will be ingnored in locales that do not support it yet
+ *  el (if the locale supports it) This handler can be safely added but will be ingnored in locales that do not support it yet
+
  */
 exports.FallbackIntentHandler = {
     canHandle(handlerInput) {
@@ -69,8 +70,9 @@ exports.FallbackIntentHandler = {
     }
 };
 /*  * SessionEndedRequest notifies that a session was ended. This handler will be triggered when a currently open session is closed for one of the fol
- * lowing reasons: 1) The user says "exit" or "quit". 2) The user does not respond or says something that does not match an intent defined in your voi
- * ce model. 3) An error occurs
+ *  lowing reasons: 1) The user says "exit" or "quit". 2) The user does not respond or says something that does not match an intent defined in your vo
+ * i ce model. 3) An error occurs
+
  */
 exports.SessionEndedRequestHandler = {
     canHandle(handlerInput) {
@@ -79,11 +81,17 @@ exports.SessionEndedRequestHandler = {
     handle(handlerInput) {
         console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
         // Any cleanup logic goes here.
-        return handlerInput.responseBuilder.getResponse(); // notice we send an empty response
+        // Clear dynamic entities
+        const clearEntitiesDirective = {
+            type: "Dialog.UpdateDynamicEntities",
+            updateBehavior: "CLEAR"
+        };
+        return handlerInput.responseBuilder.addDirective(clearEntitiesDirective).getResponse(); // notice we send an empty response
     }
 };
 /*  * The intent reflector is used for interaction model testing and debugging. It will simply repeat the intent the user said. You can create custom
  * handlers for your intents by defining them above, then also adding them to the request handler chain below
+
  */
 exports.IntentReflectorHandler = {
     canHandle(handlerInput) {
