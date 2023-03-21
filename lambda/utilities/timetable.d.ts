@@ -10,6 +10,24 @@ export declare module Timetable {
     type ClassDictionary = {
         [key: string]: ClassElement;
     };
+    type ClassEntity = {
+        id: string;
+        name: {
+            value: string;
+        };
+    };
+    export type ClassDetails = {
+        codice: string;
+        docente: string;
+        start: string;
+        end: string;
+        title: string;
+        aula: {
+            indirizzo: string;
+            piano: string;
+            edificio: string;
+        };
+    };
     /**
      * Returns the timetable for the given parameters
      * @param year Example: "2"
@@ -19,7 +37,8 @@ export declare module Timetable {
      * @param insegnamenti
      * @returns {Promise<object[]>} The timetable
      */
-    export function getTimetable(year: string, curricula: string, start: Date, end: Date, insegnamenti?: string[]): Promise<object[]>;
+    export function getTimetable(year: string, curricula: string, start: Date, end: Date, insegnamenti?: string[]): Promise<ClassDetails[]>;
+    export function getTimetableFromClassList(classes: string[], start?: Date, end?: Date): Promise<ClassDetails[] | undefined>;
     /**
      * Returns the available classes for the current year.
      * The classes are either loadaed from the database or fetched from the university website if not present or to old.
@@ -48,11 +67,6 @@ export declare module Timetable {
      * 		}
      * 	}[] | undefined >)}
      */
-    export function generateDynamicClassEntries(): Promise<{
-        id: string;
-        name: {
-            value: string;
-        };
-    }[] | undefined>;
+    export function generateDynamicClassEntries(): Promise<ClassEntity[] | undefined>;
     export {};
 }

@@ -22,9 +22,6 @@ var Timetable;
             curricula: curricula,
             anno: year
         };
-        if (insegnamenti && insegnamenti.length > 0) {
-            params.insegnamenti = insegnamenti.join("&insegnamenti=");
-        }
         let config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -32,8 +29,25 @@ var Timetable;
             headers: {},
             params: params
         };
+        if (insegnamenti && insegnamenti.length > 0) {
+            const allClasses = await getClassesList();
+            if (allClasses === undefined)
+                return [];
+            config.url += "?";
+            for (let insegnamento of insegnamenti) {
+                const classElement = allClasses[insegnamento];
+                config.url += "&insegnamenti=" + insegnamento;
+                if (classElement === undefined)
+                    continue;
+                if (classElement.mod1) {
+                    config.url += "&insegnamenti=" + classElement.mod1;
+                }
+                if (classElement.mod2) {
+                    config.url += "&insegnamenti=" + classElement.mod2;
+                }
+            }
+        }
         customLogger_1.CustomLogger.verbose("Fetching timetable with config: " + JSON.stringify(config));
-        //  if (insegnamenti && insegnamenti.length > 0) {  	config.params.insegnamenti = insegnamenti.join("&insegnamenti=")}; }
         let response = await (0, axios_1.default)(config);
         if (response.status == 200) {
             let json = response.data;
@@ -45,7 +59,45 @@ var Timetable;
         }
     }
     Timetable.getTimetable = getTimetable;
-    function filterElement(el) {
+    async function getTimetableFromClassList(classes, start, end) {
+        let queryQueue = {};
+        const classesList = await getClassesList();
+        // If classes fetch went wrong, return undefined
+        if (classesList === undefined)
+            return;
+        // Divide classes by year and curriculum
+        for (let key of classes) {
+            if (!(key in classesList)) {
+                customLogger_1.CustomLogger.warn("Class " + key + " is not in class list");
+                continue;
+            }
+            const classObj = classesList[key];
+            if (!(classObj.year in queryQueue))
+                queryQueue[classObj.year] = {};
+            if (!(classObj.curriculum in queryQueue[classObj.year]))
+                queryQueue[classObj.year][classObj.curriculum] = [];
+            queryQueue[classObj.year][classObj.curriculum].push(classObj.code);
+        }
+        // Fill start and end if they are not defined
+        if (start === undefined)
+            start = new Date();
+        if (end === undefined) {
+            end = new Date();
+            end.setDate(end.getDate() + 1);
+        }
+        // For each year and curriculum, fetch the timetable
+        let timetable = [];
+        for (let year in queryQueue) {
+            for (let curriculum in queryQueue[year]) {
+                let classes = queryQueue[year][curriculum];
+                timetable = timetable.concat(await getTimetable(year, curriculum, start, end, classes));
+                customLogger_1.CustomLogger.error(JSON.stringify(timetable));
+            }
+        }
+        return timetable;
+    }
+    Timetable.getTimetableFromClassList = getTimetableFromClassList;
+    function parseElement(el) {
         if (el["aule"].length < 0) {
             customLogger_1.CustomLogger.warn("No aule found for element: " + el["cod_modulo"]);
             el["aule"] = [{}];
@@ -64,7 +116,7 @@ var Timetable;
         };
     }
     function cleanResults(json) {
-        let jsonOut = json.map(filterElement);
+        let jsonOut = json.map(parseElement);
         return jsonOut;
     }
     /**

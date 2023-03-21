@@ -23,6 +23,19 @@ export module Timetable {
 		};
 	};
 
+	export type ClassDetails = {
+		codice: string;
+		docente: string;
+		start: string;
+		end: string;
+		title: string;
+		aula: {
+			indirizzo: string;
+			piano: string;
+			edificio: string;
+		};
+	};
+
 	/**
 	 * Returns the timetable for the given parameters
 	 * @param year Example: "2"
@@ -32,23 +45,18 @@ export module Timetable {
 	 * @param insegnamenti
 	 * @returns {Promise<object[]>} The timetable
 	 */
-	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<object[]> {
+	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<ClassDetails[]> {
 		let params: {
 			start: string;
 			end: string;
 			curricula: string;
 			anno: string;
-			insegnamenti?: string;
 		} = {
 			start: start.toISOString().split("T")[0],
 			end: end.toISOString().split("T")[0],
 			curricula: curricula,
 			anno: year
 		};
-
-		if (insegnamenti && insegnamenti.length > 0) {
-			params.insegnamenti = insegnamenti.join("&insegnamenti=");
-		}
 
 		let config = {
 			method: "get",
@@ -58,9 +66,28 @@ export module Timetable {
 			params: params
 		};
 
-		CustomLogger.verbose("Fetching timetable with config: " + JSON.stringify(config));
+		if (insegnamenti && insegnamenti.length > 0) {
+			const allClasses = await getClassesList();
+			if (allClasses === undefined) 
+				return [];
 
-		//  if (insegnamenti && insegnamenti.length > 0) {  	config.params.insegnamenti = insegnamenti.join("&insegnamenti=")}; }
+			config.url += "?";
+
+			for (let insegnamento of insegnamenti) {
+				const classElement = allClasses[insegnamento];
+				config.url += "&insegnamenti=" + insegnamento;
+				if (classElement === undefined) 
+					continue;
+				if (classElement.mod1) {
+					config.url += "&insegnamenti=" + classElement.mod1;
+				}
+				if (classElement.mod2) {
+					config.url += "&insegnamenti=" + classElement.mod2;
+				}
+			}
+		}
+
+		CustomLogger.verbose("Fetching timetable with config: " + JSON.stringify(config));
 
 		let response = await axios(config);
 		if (response.status == 200) {
@@ -72,19 +99,58 @@ export module Timetable {
 		}
 	}
 
-	function filterElement(el : any): {
-		codice: string;
-		docente: string;
-		start: string;
-		end: string;
-		title: string;
-		aula: {
-			indirizzo: string;
-			piano: string;
-			edificio: string;
-		};
-	} {
-		if(el["aule"].length < 0) {
+	export async function getTimetableFromClassList(classes : string[], start? : Date, end? : Date): Promise < ClassDetails[] | undefined > {
+		let queryQueue: {
+			[key: string]: {
+				[key: string]: string[];
+			};
+		} = {};
+
+		const classesList = await getClassesList();
+
+		// If classes fetch went wrong, return undefined
+		if (classesList === undefined) 
+			return;
+		
+		// Divide classes by year and curriculum
+		for (let key of classes) {
+			if (!(key in classesList)) {
+				CustomLogger.warn("Class " + key + " is not in class list");
+				continue;
+			}
+
+			const classObj: ClassElement = classesList[key];
+			if (!(classObj.year in queryQueue)) 
+				queryQueue[classObj.year] = {};
+			if (!(classObj.curriculum in queryQueue[classObj.year])) 
+				queryQueue[classObj.year][classObj.curriculum] = [];
+			
+			queryQueue[classObj.year][classObj.curriculum].push(classObj.code);
+		}
+
+		// Fill start and end if they are not defined
+		if (start === undefined) 
+			start = new Date();
+		if (end === undefined) {
+			end = new Date();
+			end.setDate(end.getDate() + 1);
+		}
+
+		// For each year and curriculum, fetch the timetable
+		let timetable: ClassDetails[] = [];
+		for (let year in queryQueue) {
+			for (let curriculum in queryQueue[year]) {
+				let classes = queryQueue[year][curriculum];
+				timetable = timetable.concat(await getTimetable(year, curriculum, start, end, classes));
+				CustomLogger.error(JSON.stringify(timetable));
+			}
+		}
+
+		return timetable;
+	}
+
+	function parseElement(el : any): ClassDetails {
+		if (el["aule"].length < 0) {
 			CustomLogger.warn("No aule found for element: " + el["cod_modulo"]);
 			el["aule"] = [{}];
 		}
@@ -102,8 +168,8 @@ export module Timetable {
 		};
 	}
 
-	function cleanResults(json : object[]): object[]{
-		let jsonOut = json.map(filterElement);
+	function cleanResults(json : object[]): ClassDetails[]{
+		let jsonOut = json.map(parseElement);
 		return jsonOut;
 	}
 
