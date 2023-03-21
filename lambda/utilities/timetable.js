@@ -299,7 +299,7 @@ var Timetable;
             for (let key in classList) {
                 const classObj = classList[key];
                 if (classObj.mod1)
-                    continue;
+                    continue; // Can I use .filter before looping?
                 vals.push({
                     id: key,
                     name: {

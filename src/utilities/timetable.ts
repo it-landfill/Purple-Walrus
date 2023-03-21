@@ -16,6 +16,13 @@ export module Timetable {
 		[key: string]: ClassElement;
 	};
 
+	type ClassEntity = {
+		id: string;
+		name: {
+			value: string;
+		};
+	};
+
 	/**
 	 * Returns the timetable for the given parameters
 	 * @param year Example: "2"
@@ -341,7 +348,6 @@ export module Timetable {
 		];
 	}
 
-
 	/**
 	 * Generates the dynamic class entries for the class picker.
 	 * The entries are generated from the classes list and will be used on skill launch.
@@ -354,19 +360,15 @@ export module Timetable {
 	 * 		}
 	 * 	}[] | undefined >)}
 	 */
-	export async function generateDynamicClassEntries(): Promise < {
-		id: string;
-		name: {
-			value: string
-		}
-	}[] | undefined > {
+	export async function generateDynamicClassEntries(): Promise < ClassEntity[] | undefined > {
 		const classList = await getClassesList();
 		if (classList) {
 			let vals = [];
 
 			for (let key in classList) {
 				const classObj = classList[key];
-				if (classObj.mod1) continue;
+				if (classObj.mod1) 
+					continue; // Can I use .filter before looping?
 				vals.push({
 					id: key,
 					name: {
