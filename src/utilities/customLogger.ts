@@ -27,6 +27,6 @@ export module CustomLogger {
 		console.log("\x1B[90m[PW]\x1B[1;36m[DEBUG]\x1B[0m\t" + toString(msg));
 	}
 	export function verbose(msg : any) {
-		console.log("\x1B[90m[PW]\x1B[1;34m[VERBOSE]\x1B[0m\t" + toString(msg));
+		console.log("\x1B[90m[PW]\x1B[1;34m[VERBOSE]\t" + toString(msg) + "\x1B[0m");
 	}
 }
