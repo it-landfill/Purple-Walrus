@@ -68,8 +68,10 @@ export module Timetable {
 
 		if (insegnamenti && insegnamenti.length > 0) {
 			const allClasses = await getClassesList();
-			if (allClasses === undefined) 
+			if (allClasses === undefined) {
+				CustomLogger.error("Error while fetching classes list");
 				return [];
+			}
 
 			config.url += "?";
 
@@ -109,8 +111,10 @@ export module Timetable {
 		const classesList = await getClassesList();
 
 		// If classes fetch went wrong, return undefined
-		if (classesList === undefined) 
+		if (classesList === undefined) {
+			CustomLogger.error("Error while fetching classes list");
 			return;
+		}
 		
 		// Divide classes by year and curriculum
 		for (let key of classes) {
@@ -133,7 +137,7 @@ export module Timetable {
 			start = new Date();
 		if (end === undefined) {
 			end = new Date();
-			end.setDate(end.getDate() + 1);
+			end.setDate(end.getDate() + 7);
 		}
 
 		// For each year and curriculum, fetch the timetable
@@ -142,7 +146,6 @@ export module Timetable {
 			for (let curriculum in queryQueue[year]) {
 				let classes = queryQueue[year][curriculum];
 				timetable = timetable.concat(await getTimetable(year, curriculum, start, end, classes));
-				CustomLogger.error(JSON.stringify(timetable));
 			}
 		}
 
@@ -400,10 +403,11 @@ export module Timetable {
 	 * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
 	 * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
 	 *
+	 * @export
 	 * @param {string} name The class name to format
 	 * @return {*}  {string} The formatted class name
 	 */
-	function cleanClassName(name : string): string[]{
+	export function cleanClassName(name : string): string[]{
 		const regex = /(.+)(?: \/ \((\d)\) Modulo \d)/;
 		const match = regex.exec(name);
 		let cleanName = (match !== null ? match[1] : name).trim().toLowerCase();

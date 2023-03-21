@@ -56,6 +56,16 @@ export declare module Timetable {
      */
     export function resolveClassIDList(classIDList: string[]): Promise<ClassElement[]>;
     /**
+     * Formats a class name to a more readable format.
+     * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
+     * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
+     *
+     * @export
+     * @param {string} name The class name to format
+     * @return {*}  {string} The formatted class name
+     */
+    export function cleanClassName(name: string): string[];
+    /**
      * Generates the dynamic class entries for the class picker.
      * The entries are generated from the classes list and will be used on skill launch.
      *

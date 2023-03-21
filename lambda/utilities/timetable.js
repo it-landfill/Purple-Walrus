@@ -31,8 +31,10 @@ var Timetable;
         };
         if (insegnamenti && insegnamenti.length > 0) {
             const allClasses = await getClassesList();
-            if (allClasses === undefined)
+            if (allClasses === undefined) {
+                customLogger_1.CustomLogger.error("Error while fetching classes list");
                 return [];
+            }
             config.url += "?";
             for (let insegnamento of insegnamenti) {
                 const classElement = allClasses[insegnamento];
@@ -63,8 +65,10 @@ var Timetable;
         let queryQueue = {};
         const classesList = await getClassesList();
         // If classes fetch went wrong, return undefined
-        if (classesList === undefined)
+        if (classesList === undefined) {
+            customLogger_1.CustomLogger.error("Error while fetching classes list");
             return;
+        }
         // Divide classes by year and curriculum
         for (let key of classes) {
             if (!(key in classesList)) {
@@ -83,7 +87,7 @@ var Timetable;
             start = new Date();
         if (end === undefined) {
             end = new Date();
-            end.setDate(end.getDate() + 1);
+            end.setDate(end.getDate() + 7);
         }
         // For each year and curriculum, fetch the timetable
         let timetable = [];
@@ -91,7 +95,6 @@ var Timetable;
             for (let curriculum in queryQueue[year]) {
                 let classes = queryQueue[year][curriculum];
                 timetable = timetable.concat(await getTimetable(year, curriculum, start, end, classes));
-                customLogger_1.CustomLogger.error(JSON.stringify(timetable));
             }
         }
         return timetable;
@@ -320,6 +323,7 @@ var Timetable;
      * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
      * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
      *
+     * @export
      * @param {string} name The class name to format
      * @return {*}  {string} The formatted class name
      */
@@ -332,6 +336,7 @@ var Timetable;
             cleanName, match !== null ? match[2] : "0"
         ];
     }
+    Timetable.cleanClassName = cleanClassName;
     /**
      * Generates the dynamic class entries for the class picker.
      * The entries are generated from the classes list and will be used on skill launch.
