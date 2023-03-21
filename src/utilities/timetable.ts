@@ -3,19 +3,29 @@ import {CustomLogger} from "./customLogger";
 import axios from "axios";
 
 export module Timetable {
+
+	/**
+	 * This represents a single course
+	 */
 	export type ClassElement = {
 		code: string;
 		name: string;
 		year: string;
 		curriculum: string;
-		mod1?: string;
-		mod2?: string;
+		mod1?: string; //mod1 and mod2 are optional and are present only if the course has multiple modules
+		mod2?: string; //mod1 and mod2 are optional and are present only if the course has multiple modules
 	};
 
+	/**
+	 * This is the dictionary of all the courses available with the course code as key
+	 */
 	type ClassDictionary = {
 		[key: string]: ClassElement;
 	};
 
+	/**
+	 * This represents a single course entry used by dynamic entity resolution
+	 */
 	type ClassEntity = {
 		id: string;
 		name: {
@@ -23,6 +33,9 @@ export module Timetable {
 		};
 	};
 
+	/**
+	 * This represents info on a specific class fetched from the university calendar
+	 */
 	export type ClassDetails = {
 		codice: string;
 		docente: string;
@@ -37,7 +50,7 @@ export module Timetable {
 	};
 
 	/**
-	 * Returns the timetable for the given parameters
+	 * Queries the university calendar and returns the list of all the courses matching the specified criterias
 	 * @param year Example: "2"
 	 * @param curricula Example: "A58-000"
 	 * @param start
@@ -46,18 +59,16 @@ export module Timetable {
 	 * @returns {Promise<object[]>} The timetable
 	 */
 	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<ClassDetails[]> {
-		let params: {
-			start: string;
-			end: string;
-			curricula: string;
-			anno: string;
-		} = {
+
+		// Query parameters
+		let params = {
 			start: start.toISOString().split("T")[0],
 			end: end.toISOString().split("T")[0],
 			curricula: curricula,
 			anno: year
 		};
 
+		// Config for axios request
 		let config = {
 			method: "get",
 			maxBodyLength: Infinity,
@@ -66,15 +77,20 @@ export module Timetable {
 			params: params
 		};
 
+		// If the user has specified some courses, filter the query with them
+		// Note that here we are also resolving multiple modules for the same course
 		if (insegnamenti && insegnamenti.length > 0) {
+			// Get the list of all the courses
 			const allClasses = await getClassesList();
 			if (allClasses === undefined) {
 				CustomLogger.error("Error while fetching classes list");
 				return [];
 			}
 
+			// We can't add this parameter to params object doe to some sanification problems so we will directly append it to the url
 			config.url += "?";
 
+			// For each course code, append it to the url and, if it has multiple modules, also append the other modules.
 			for (let insegnamento of insegnamenti) {
 				const classElement = allClasses[insegnamento];
 				config.url += "&insegnamenti=" + insegnamento;
@@ -91,8 +107,10 @@ export module Timetable {
 
 		CustomLogger.verbose("Fetching timetable with config: " + JSON.stringify(config));
 
+		// Query the university calendar
 		let response = await axios(config);
 		if (response.status == 200) {
+			// Everything went well, clean the results and return them
 			let json = response.data;
 			return cleanResults(json);
 		} else {
@@ -101,10 +119,20 @@ export module Timetable {
 		}
 	}
 
+	/**
+	 * Queries the university calendar and returns the list of all the courses matching the specified criterias
+	 *
+	 * @export
+	 * @param {string[]} classes The list of course ids to fetch
+	 * @param {Date} [start] The start date of the timetable (if omitted it will be today)
+	 * @param {Date} [end] The end date of the timetable (if omitted it will be one week from now)
+	 * @return {*}  {(Promise < ClassDetails[] | undefined >)} The timetable
+	 */
 	export async function getTimetableFromClassList(classes : string[], start? : Date, end? : Date): Promise < ClassDetails[] | undefined > {
+		// Since the university calendar only allows to query by year and curriculum, we need to divide the classes by year and curriculum.
 		let queryQueue: {
-			[key: string]: {
-				[key: string]: string[];
+			[key: string]: { // Year
+				[key: string]: string[]; // Curriculum
 			};
 		} = {};
 
@@ -115,7 +143,7 @@ export module Timetable {
 			CustomLogger.error("Error while fetching classes list");
 			return;
 		}
-		
+	
 		// Divide classes by year and curriculum
 		for (let key of classes) {
 			if (!(key in classesList)) {
@@ -124,11 +152,14 @@ export module Timetable {
 			}
 
 			const classObj: ClassElement = classesList[key];
+			// If the class year is not in the query queue, add it
 			if (!(classObj.year in queryQueue)) 
 				queryQueue[classObj.year] = {};
+			// If the class curriculum is not in the query queue, add it
 			if (!(classObj.curriculum in queryQueue[classObj.year])) 
 				queryQueue[classObj.year][classObj.curriculum] = [];
 			
+			// Add the course code to the query queue
 			queryQueue[classObj.year][classObj.curriculum].push(classObj.code);
 		}
 
@@ -152,11 +183,21 @@ export module Timetable {
 		return timetable;
 	}
 
+	
+	/**
+	 * Given a json object, it convers it to a ClassDetails object
+	 *
+	 * @param {*} el The json object
+	 * @return {*}  {ClassDetails} The ClassDetails object
+	 */
 	function parseElement(el : any): ClassDetails {
+		// If the element has no aule, add an empty one
 		if (el["aule"].length < 0) {
 			CustomLogger.warn("No aule found for element: " + el["cod_modulo"]);
 			el["aule"] = [{}];
 		}
+
+		// Build the ClassDetails object
 		return {
 			codice: el["cod_modulo"],
 			docente: el["docente"],
@@ -171,6 +212,12 @@ export module Timetable {
 		};
 	}
 
+	/**
+	 * Given a json object, apply parseElement to each element and return the result
+	 *
+	 * @param {object[]} json The json object
+	 * @return {*}  {ClassDetails[]} The ClassDetails object
+	 */
 	function cleanResults(json : object[]): ClassDetails[]{
 		let jsonOut = json.map(parseElement);
 		return jsonOut;
@@ -182,6 +229,7 @@ export module Timetable {
 	 * @return {*}  {(Promise < object[] | undefined >)}
 	 */
 	async function getAvailableCurricula(): Promise < object[] | undefined > {
+		// Axios config
 		var config = {
 			method: "get",
 			maxBodyLength: Infinity,
@@ -224,6 +272,7 @@ export module Timetable {
 			end = new Date(start.getFullYear(), 8, 1);
 		}
 
+		// Axios config
 		var config = {
 			method: "get",
 			maxBodyLength: Infinity,
@@ -241,29 +290,37 @@ export module Timetable {
 		if (response.status == 200) {
 			let result = response.data;
 
+			// For each class in the result, add it to the classes dictionary
 			for (let el of result) {
 				if (el["extCode"] in classes) 
 					continue;
 				
+				// Clean the class name, removing the module number and trimming it
 				const cleanRes = cleanClassName(el["title"]);
 
+				// Create the class object
 				let classObj: ClassElement = {
 					code: el["extCode"],
 					name: cleanRes[0],
 					year: year,
 					curriculum: curriculum
 				};
+
+				// Add the class to the classes dictionary
 				classes[el["extCode"]] = classObj;
 
 				// If cleanRes[0] in classesSet then it is a module 1 or 2 since we have already found a class with same name
 				if (cleanRes[0] in classesSet) {
+					// Get the other module
 					const otherModule = classesSet[cleanRes[0]];
 					switch (cleanRes[1]) {
 						case "1":
+							// This is module 1, so we add the other module as module 2
 							classObj.mod2 = otherModule.code;
 							otherModule.mod1 = classObj.code;
 							break;
 						case "2":
+							// This is module 2, so we add the other module as module 1
 							classObj.mod1 = otherModule.code;
 							otherModule.mod2 = classObj.code;
 							break;
@@ -298,15 +355,21 @@ export module Timetable {
 			return;
 		
 		let classes: ClassDictionary = {};
+
+		// For each curriculum, fetch the classes for the first and second year
 		for (let curriculum of curricula) {
 			if ("value" in curriculum) {
+				// Fetch the classes for the first year
 				const cla1 = await fetchClassesFromTimetable("1", curriculum.value as string);
+				// Fetch the classes for the second year
 				const cla2 = await fetchClassesFromTimetable("2", curriculum.value as string);
+				// Concatenate the objects
 				const cla = {
 					...cla1,
 					...cla2
 				};
 
+				// Add the classes to the classes dictionary
 				for (let key in cla) {
 					if (!classes.hasOwnProperty(key)) {
 						classes[key] = cla[key];
@@ -349,6 +412,7 @@ export module Timetable {
 		let now = new Date();
 		let diff = Math.abs(now.getTime() - lastUpdated.getTime());
 		let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+		// If it is older, fetch the classes again
 		if (diffDays > updateDays) {
 			const classes = await getAvailableClasses();
 			if (classes === undefined) 
@@ -372,11 +436,13 @@ export module Timetable {
 	 * @return {*}  {(ClassElement | undefined)} The class element or undefined if not found
 	 */
 	function resolveClassID(classes : ClassDictionary, classID : string): ClassElement | undefined {
+		// Check if the class is in the classes list, if not return undefined
 		if (!(classID in classes)) {
 			CustomLogger.warn("Class " + classID + " not found in classes list.");
 			return;
 		}
 
+		// If the class is in the classes list, return it
 		return classes[classID];
 	}
 
@@ -389,12 +455,14 @@ export module Timetable {
 	 */
 	export async function resolveClassIDList(classIDList : string[]): Promise<ClassElement[]> {
 		const classes = await getClassesList();
-
+ 
+		// If the classes list is undefined, return an empty array
 		if (classes === undefined) {
 			CustomLogger.warn("Classes list is undefined.");
 			return [];
 		}
 
+		// Resolve the class ID for each element and return the list removing the elements that failed to resolve (are undefined)
 		return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined)as ClassElement[];
 	}
 
@@ -405,22 +473,26 @@ export module Timetable {
 	 *
 	 * @export
 	 * @param {string} name The class name to format
-	 * @return {*}  {string} The formatted class name
+	 * @return {*}  {string[]} An array with two elements, the formatted name and the module number (string)
 	 */
 	export function cleanClassName(name : string): string[]{
+		// Regex to match  / (2) Modulo 2
 		const regex = /(.+)(?: \/ \((\d)\) Modulo \d)/;
 		const match = regex.exec(name);
+		// If the regex matches, return the first group (The class name without  / (2) Modulo 2), otherwise return the original name (It does not have a module number)
+		// Also, trim the name and capitalize the first letter
 		let cleanName = (match !== null ? match[1] : name).trim().toLowerCase();
 		cleanName = cleanName[0].toUpperCase() + cleanName.slice(1);
 
+		// Return two parameters, the clean name and the module number (string)
 		return [
 			cleanName, match !== null ? match[2] : "0"
 		];
 	}
 
 	/**
-	 * Generates the dynamic class entries for the class picker.
-	 * The entries are generated from the classes list and will be used on skill launch.
+	 * Generates the dynamic class entries for entity resolution.
+	 * The entries are generated from the classes list and will be passed to alexa on skill launch (on launchIntent).
 	 *
 	 * @export
 	 * @return {*}  {(Promise < {
@@ -432,13 +504,16 @@ export module Timetable {
 	 */
 	export async function generateDynamicClassEntries(): Promise < ClassEntity[] | undefined > {
 		const classList = await getClassesList();
+
 		if (classList) {
 			let vals = [];
 
+			// Loop classes and add them to the list
 			for (let key in classList) {
 				const classObj = classList[key];
 				if (classObj.mod1) 
 					continue; // Can I use .filter before looping?
+				// Create ClassEntity object and add it to the list
 				vals.push({
 					id: key,
 					name: {

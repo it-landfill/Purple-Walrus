@@ -1,4 +1,7 @@
 export declare module Timetable {
+    /**
+     * This represents a single course
+     */
     export type ClassElement = {
         code: string;
         name: string;
@@ -7,15 +10,24 @@ export declare module Timetable {
         mod1?: string;
         mod2?: string;
     };
+    /**
+     * This is the dictionary of all the courses available with the course code as key
+     */
     type ClassDictionary = {
         [key: string]: ClassElement;
     };
+    /**
+     * This represents a single course entry used by dynamic entity resolution
+     */
     type ClassEntity = {
         id: string;
         name: {
             value: string;
         };
     };
+    /**
+     * This represents info on a specific class fetched from the university calendar
+     */
     export type ClassDetails = {
         codice: string;
         docente: string;
@@ -29,7 +41,7 @@ export declare module Timetable {
         };
     };
     /**
-     * Returns the timetable for the given parameters
+     * Queries the university calendar and returns the list of all the courses matching the specified criterias
      * @param year Example: "2"
      * @param curricula Example: "A58-000"
      * @param start
@@ -38,6 +50,15 @@ export declare module Timetable {
      * @returns {Promise<object[]>} The timetable
      */
     export function getTimetable(year: string, curricula: string, start: Date, end: Date, insegnamenti?: string[]): Promise<ClassDetails[]>;
+    /**
+     * Queries the university calendar and returns the list of all the courses matching the specified criterias
+     *
+     * @export
+     * @param {string[]} classes The list of course ids to fetch
+     * @param {Date} [start] The start date of the timetable (if omitted it will be today)
+     * @param {Date} [end] The end date of the timetable (if omitted it will be one week from now)
+     * @return {*}  {(Promise < ClassDetails[] | undefined >)} The timetable
+     */
     export function getTimetableFromClassList(classes: string[], start?: Date, end?: Date): Promise<ClassDetails[] | undefined>;
     /**
      * Returns the available classes for the current year.
@@ -62,12 +83,12 @@ export declare module Timetable {
      *
      * @export
      * @param {string} name The class name to format
-     * @return {*}  {string} The formatted class name
+     * @return {*}  {string[]} An array with two elements, the formatted name and the module number (string)
      */
     export function cleanClassName(name: string): string[];
     /**
-     * Generates the dynamic class entries for the class picker.
-     * The entries are generated from the classes list and will be used on skill launch.
+     * Generates the dynamic class entries for entity resolution.
+     * The entries are generated from the classes list and will be passed to alexa on skill launch (on launchIntent).
      *
      * @export
      * @return {*}  {(Promise < {
