@@ -36,5 +36,23 @@ export declare module Timetable {
      * @return {*}  {Promise<ClassElement[]>} The list of class elements
      */
     export function resolveClassIDList(classIDList: string[]): Promise<ClassElement[]>;
+    /**
+     * Generates the dynamic class entries for the class picker.
+     * The entries are generated from the classes list and will be used on skill launch.
+     *
+     * @export
+     * @return {*}  {(Promise < {
+     * 		id: string;
+     * 		name: {
+     * 			value: string
+     * 		}
+     * 	}[] | undefined >)}
+     */
+    export function generateDynamicClassEntries(): Promise<{
+        id: string;
+        name: {
+            value: string;
+        };
+    }[] | undefined>;
     export {};
 }

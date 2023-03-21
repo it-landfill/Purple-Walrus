@@ -14,19 +14,9 @@ export const LaunchRequestHandler = {
 			types: []
 		};
 
-		const classList = await Timetable.getClassesList();
-		if (classList) {
-			let vals = [];
-
-			for (let key in classList) {
-				vals.push({
-					id: key,
-					name: {
-						value: classList[key].name
-					}
-				});
-			}
-
+		// Get the dynamic entities
+		const vals = await Timetable.generateDynamicClassEntries();
+		if (vals) {
 			replaceEntityDirective.types = [
 				{
 					name: "ClassNames",
@@ -98,9 +88,7 @@ export const SessionEndedRequestHandler = {
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
 		console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
-		// Any cleanup logic goes here.
-
-		// Clear dynamic entities
+		// Any cleanup logic goes here. Clear dynamic entities
 		const clearEntitiesDirective: Directive = {
 			type: "Dialog.UpdateDynamicEntities",
 			updateBehavior: "CLEAR"

@@ -280,4 +280,36 @@ var Timetable;
             cleanName, match !== null ? match[2] : "0"
         ];
     }
+    /**
+     * Generates the dynamic class entries for the class picker.
+     * The entries are generated from the classes list and will be used on skill launch.
+     *
+     * @export
+     * @return {*}  {(Promise < {
+     * 		id: string;
+     * 		name: {
+     * 			value: string
+     * 		}
+     * 	}[] | undefined >)}
+     */
+    async function generateDynamicClassEntries() {
+        const classList = await getClassesList();
+        if (classList) {
+            let vals = [];
+            for (let key in classList) {
+                const classObj = classList[key];
+                if (classObj.mod1)
+                    continue;
+                vals.push({
+                    id: key,
+                    name: {
+                        value: classObj.name
+                    }
+                });
+            }
+            return vals;
+        }
+        return;
+    }
+    Timetable.generateDynamicClassEntries = generateDynamicClassEntries;
 })(Timetable = exports.Timetable || (exports.Timetable = {}));
