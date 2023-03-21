@@ -99,6 +99,8 @@ var timetable;
      */
     async function fetchClassesFromTimetable(year, curriculum) {
         let classes = {};
+        // Same as classes but indexed by class name
+        let classesSet = {};
         let start = new Date();
         let end;
         if (start.getMonth() >= 8) {
@@ -127,12 +129,34 @@ var timetable;
             for (let el of result) {
                 if (el["extCode"] in classes)
                     continue;
-                classes[el["extCode"]] = {
+                const cleanRes = cleanClassName(el["title"]);
+                let classObj = {
                     code: el["extCode"],
-                    name: el["title"],
+                    name: cleanRes[0],
                     year: year,
                     curriculum: curriculum
                 };
+                classes[el["extCode"]] = classObj;
+                // If cleanRes[0] in classesSet then it is a module 1 or 2 since we have already found a class with same name
+                if (cleanRes[0] in classesSet) {
+                    const otherModule = classesSet[cleanRes[0]];
+                    switch (cleanRes[1]) {
+                        case "1":
+                            classObj.mod2 = otherModule.code;
+                            otherModule.mod1 = classObj.code;
+                            break;
+                        case "2":
+                            classObj.mod1 = otherModule.code;
+                            otherModule.mod2 = classObj.code;
+                            break;
+                        default:
+                            customLogger_1.CustomLogger.warn("Class " + JSON.stringify(classObj) + " has a duplicate " + JSON.stringify(otherModule) + " but is no module 1 or 2.");
+                    }
+                }
+                else {
+                    // If !cleanRes[0] in classesSet than we have never seen this class, so we add it to classesSet
+                    classesSet[cleanRes[0]] = classObj;
+                }
             }
         }
         else {
@@ -239,4 +263,21 @@ var timetable;
         return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined);
     }
     timetable.resolveClassIDList = resolveClassIDList;
+    /**
+     * Formats a class name to a more readable format.
+     * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
+     * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
+     *
+     * @param {string} name The class name to format
+     * @return {*}  {string} The formatted class name
+     */
+    function cleanClassName(name) {
+        const regex = /(.+)(?: \/ \((\d)\) Modulo \d)/;
+        const match = regex.exec(name);
+        let cleanName = (match !== null ? match[1] : name).trim().toLowerCase();
+        cleanName = cleanName[0].toUpperCase() + cleanName.slice(1);
+        return [
+            cleanName, match !== null ? match[2] : "0"
+        ];
+    }
 })(timetable = exports.timetable || (exports.timetable = {}));

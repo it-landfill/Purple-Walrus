@@ -4,6 +4,8 @@ export declare module timetable {
         name: string;
         year: string;
         curriculum: string;
+        mod1?: string;
+        mod2?: string;
     };
     type ClassDictionary = {
         [key: string]: ClassElement;
