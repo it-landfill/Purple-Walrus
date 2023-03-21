@@ -7,7 +7,7 @@ const customLogger_1 = require("../utilities/customLogger");
 // sent to the Alexa servers.
 exports.SaveDataInterceptor = {
     async process(handlerInput) {
-        let persistent = dbUtils_1.dbUtils.getPersistenceDataTemplate();
+        let persistent = dbUtils_1.DbUtils.getPersistenceDataTemplate();
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         for (let key in persistent) {
             if (sessionAttributes.hasOwnProperty(key)) {

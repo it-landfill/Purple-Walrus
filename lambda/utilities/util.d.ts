@@ -1,2 +1,2 @@
-export declare module util {
+export declare module Util {
 }

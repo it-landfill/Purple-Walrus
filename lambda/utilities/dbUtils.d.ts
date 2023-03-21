@@ -1,5 +1,5 @@
 import { DynamoDbPersistenceAdapter } from "ask-sdk-dynamodb-persistence-adapter";
-export declare module dbUtils {
+export declare module DbUtils {
     function getPersistenceDataTemplate(): {
         [key: string]: string | string[] | undefined;
     };

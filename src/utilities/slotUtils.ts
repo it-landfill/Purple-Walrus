@@ -2,7 +2,7 @@ import Alexa = require("ask-sdk-core");
 import {slu} from "ask-sdk-model";
 import {CustomLogger} from "../utilities/customLogger";
 
-export module slotUtils {
+export module SlotUtils {
 	type SlotResolution = {
 		static: {
 			name: string;

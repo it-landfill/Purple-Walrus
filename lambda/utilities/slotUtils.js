@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.slotUtils = void 0;
+exports.SlotUtils = void 0;
 const Alexa = require("ask-sdk-core");
 const customLogger_1 = require("../utilities/customLogger");
-var slotUtils;
-(function (slotUtils) {
+var SlotUtils;
+(function (SlotUtils) {
     /**
      * Get the slot value resolution from the specified slot.
      * If no slot is found, return undefined.
@@ -34,7 +34,7 @@ var slotUtils;
         }
         return resolution.dynamic;
     }
-    slotUtils.getSlotValue = getSlotValue;
+    SlotUtils.getSlotValue = getSlotValue;
     /**
      * Resolve the static and dynamic value of the slot.
      *
@@ -69,4 +69,4 @@ var slotUtils;
         }
         return resolution;
     }
-})(slotUtils = exports.slotUtils || (exports.slotUtils = {}));
+})(SlotUtils = exports.SlotUtils || (exports.SlotUtils = {}));

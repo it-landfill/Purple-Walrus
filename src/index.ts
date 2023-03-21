@@ -23,7 +23,7 @@ import {SaveDataInterceptor} from "./interceptors/saveDataInterceptor";
 import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
 
 // Utilities
-import {dbUtils} from "./utilities/dbUtils";
+import {DbUtils} from "./utilities/dbUtils";
 
 /**
  * This handler acts as the entry point for your skill, routing all request and response
@@ -42,7 +42,7 @@ exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	FallbackIntentHandler,
 	SessionEndedRequestHandler,
 	IntentReflectorHandler
-).addErrorHandlers(ErrorHandler).withPersistenceAdapter(dbUtils.getPersistenceAdapter()).addRequestInterceptors(
+).addErrorHandlers(ErrorHandler).withPersistenceAdapter(DbUtils.getPersistenceAdapter()).addRequestInterceptors(
 	LoadDataInterceptor,
 	LoggingRequestInterceptor
 ).addResponseInterceptors(SaveDataInterceptor, LoggingResponseInterceptor).lambda();

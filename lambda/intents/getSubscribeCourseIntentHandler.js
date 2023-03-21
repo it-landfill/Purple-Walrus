@@ -11,7 +11,7 @@ exports.GetSubscribeCourseIntentHandler = {
     },
     async handle(handlerInput) {
         // Get the list of available classes
-        const classes = timetable_1.timetable.getClassesList();
+        const classes = timetable_1.Timetable.getClassesList();
         // Get the course subscribed by the user from the session attributes
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const materie = sessionAttributes.materie;
@@ -19,7 +19,7 @@ exports.GetSubscribeCourseIntentHandler = {
         if (materie === undefined)
             return handlerInput.responseBuilder.speak("Non segui nessun corso.").getResponse();
         // Resolve materie
-        const resolvedMaterie = (await timetable_1.timetable.resolveClassIDList(materie)).map((nateria) => nateria.name);
+        const resolvedMaterie = (await timetable_1.Timetable.resolveClassIDList(materie)).map((nateria) => nateria.name);
         if (resolvedMaterie.length === 0) {
             customLogger_1.CustomLogger.warn("There was an error resolving the materie list. " + JSON.stringify(materie));
             return handlerInput.responseBuilder.speak("Si è verificato un errore, per favore riprova.").getResponse();

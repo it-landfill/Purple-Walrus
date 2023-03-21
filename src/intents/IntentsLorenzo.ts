@@ -1,7 +1,7 @@
 import Alexa = require("ask-sdk-core");
-import {timetable} from "../utilities/timetable";
+import {Timetable} from "../utilities/timetable";
 import {CustomLogger} from "../utilities/customLogger";
-import {slotUtils} from "../utilities/slotUtils";
+import {SlotUtils} from "../utilities/slotUtils";
 
 export module IntentsLorenzo {
 	// "Leggi il calendario"
@@ -13,8 +13,8 @@ export module IntentsLorenzo {
 		},
 		async handle(handlerInput : Alexa.HandlerInput) {
 			// Get the course name from the slot and timespan from the slot.
-			const course = slotUtils.getSlotValue(handlerInput, "courseName");
-			const timespan = slotUtils.getSlotValue(handlerInput, "timespan");
+			const course = SlotUtils.getSlotValue(handlerInput, "courseName");
+			const timespan = SlotUtils.getSlotValue(handlerInput, "timespan");
 			// Check if course and/or timespan are filled
 			if (course === undefined && timespan === undefined) {
 				return handlerInput.responseBuilder.speak("Non hai specificato il corso e il periodo di tempo. Riprova.").getResponse();
@@ -24,7 +24,7 @@ export module IntentsLorenzo {
 			// Get user subscribe courses from persistence adapter
 			const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 			const materie = sessionAttributes.materie;
-			const listMaterie = await timetable.getClassesList();
+			const listMaterie = await Timetable.getClassesList();
 			// Generate the schedule for the user
 			if (materie === undefined || listMaterie === undefined) 
 				return handlerInput.responseBuilder.speak("Non sei iscritto a nessun corso. Iscriviti ad un corso per poter leggere il calendario.").reprompt(
@@ -38,7 +38,7 @@ export module IntentsLorenzo {
 			// Add one week to the actual time
 			const nextWeek = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
-			const output = await timetable.getTimetable(gino.year, gino.curriculum, now, nextWeek, [gino.code]);
+			const output = await Timetable.getTimetable(gino.year, gino.curriculum, now, nextWeek, [gino.code]);
 			// Print the schedule
 			CustomLogger.info(output);
 

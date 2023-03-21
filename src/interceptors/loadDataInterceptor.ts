@@ -1,5 +1,5 @@
 import Alexa = require("ask-sdk-core");
-import {dbUtils} from "../utilities/dbUtils";
+import {DbUtils} from "../utilities/dbUtils";
 import {CustomLogger} from "../utilities/customLogger";
 
 export const LoadDataInterceptor = {
@@ -11,7 +11,7 @@ export const LoadDataInterceptor = {
 		if (!persistent) 
 			persistent = {};
 		
-		for (let key in dbUtils.getPersistenceDataTemplate()) {
+		for (let key in DbUtils.getPersistenceDataTemplate()) {
 			if (persistent.hasOwnProperty(key)) {
 				sessionAttributes[key] = persistent[key];
 			} else {

@@ -2,7 +2,7 @@ import AWS = require("aws-sdk");
 
 const s3SigV4Client = new AWS.S3({signatureVersion: "v4", region: process.env.S3_PERSISTENCE_REGION});
 
-export module util {
+export module Util {
 	function getS3PreSignedUrl(s3ObjectKey : any) {
 		const bucketName = process.env.S3_PERSISTENCE_BUCKET;
 		const s3PreSignedUrl = s3SigV4Client.getSignedUrl("getObject", {

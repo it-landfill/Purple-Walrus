@@ -1,5 +1,5 @@
 import Alexa = require("ask-sdk-core");
-import {slotUtils} from "../utilities/slotUtils";
+import {SlotUtils} from "../utilities/slotUtils";
 import {CustomLogger} from "../utilities/customLogger";
 
 import AWS = require("aws-sdk");
@@ -14,12 +14,13 @@ export module IntentsAlessandro {
 		handle(handlerInput : Alexa.HandlerInput) {
 			// Get the course name from the slot.
 			CustomLogger.info("Getting course name from slot: " + JSON.stringify(Alexa.getSlot(handlerInput.requestEnvelope, "courseName")));
-			const courses = slotUtils.getSlotValue(handlerInput, "courseName");
+			const courses = SlotUtils.getSlotValue(handlerInput, "courseName");
 			// If the course name is not valid, return an error.
 			if (courses === undefined || courses.length === 0) 
 				return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();
 			
-			const course = courses[0]; //FIXME: handle multiple courses like modulo 1 / modulo 2
+			// Get the first course from the list since this is most likely the correct one.
+			const course = courses[0];
 
 			// Speak output the course name.
 
