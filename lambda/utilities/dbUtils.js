@@ -108,7 +108,7 @@ var DbUtils;
                 customLogger_1.CustomLogger.info("No data found in DynamoDB");
                 return;
             }
-            customLogger_1.CustomLogger.info("Data retrieved from DynamoDB: " + JSON.stringify(getPromise.Item));
+            customLogger_1.CustomLogger.verbose("Data retrieved from DynamoDB: " + JSON.stringify(getPromise.Item));
             return AWS.DynamoDB.Converter.unmarshall(getPromise.Item).attributes;
         }
     }
@@ -143,7 +143,7 @@ var DbUtils;
             return false;
         }
         else {
-            customLogger_1.CustomLogger.info("Data saved to DynamoDB: " + JSON.stringify(data));
+            customLogger_1.CustomLogger.verbose("Data saved to DynamoDB: " + JSON.stringify(data));
             return true;
         }
     }

@@ -34,7 +34,7 @@ var CustomLogger;
     }
     CustomLogger.log = log;
     function verbose(msg) {
-        console.log("\x1B[90m[PW]\x1B[1;34m[VERBOSE]\x1B[0m\t" + toString(msg));
+        console.log("\x1B[90m[PW]\x1B[1;34m[VERBOSE]\t" + toString(msg) + "\x1B[0m");
     }
     CustomLogger.verbose = verbose;
 })(CustomLogger = exports.CustomLogger || (exports.CustomLogger = {}));

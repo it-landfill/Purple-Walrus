@@ -14,17 +14,9 @@ exports.LaunchRequestHandler = {
             updateBehavior: "REPLACE",
             types: []
         };
-        const classList = await timetable_1.Timetable.getClassesList();
-        if (classList) {
-            let vals = [];
-            for (let key in classList) {
-                vals.push({
-                    id: key,
-                    name: {
-                        value: classList[key].name
-                    }
-                });
-            }
+        // Get the dynamic entities
+        const vals = await timetable_1.Timetable.generateDynamicClassEntries();
+        if (vals) {
             replaceEntityDirective.types = [
                 {
                     name: "ClassNames",
@@ -80,8 +72,7 @@ exports.SessionEndedRequestHandler = {
     },
     handle(handlerInput) {
         console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
-        // Any cleanup logic goes here.
-        // Clear dynamic entities
+        // Any cleanup logic goes here. Clear dynamic entities
         const clearEntitiesDirective = {
             type: "Dialog.UpdateDynamicEntities",
             updateBehavior: "CLEAR"

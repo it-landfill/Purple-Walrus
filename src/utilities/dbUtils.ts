@@ -119,7 +119,7 @@ export module DbUtils {
 				return;
 			}
 
-			CustomLogger.info("Data retrieved from DynamoDB: " + JSON.stringify(getPromise.Item));
+			CustomLogger.verbose("Data retrieved from DynamoDB: " + JSON.stringify(getPromise.Item));
 			return AWS.DynamoDB.Converter.unmarshall(getPromise.Item).attributes;
 		}
 	}
@@ -160,7 +160,7 @@ export module DbUtils {
 			console.warn(putPromise.$response.error, putPromise.$response.error.stack); // an error occurred
 			return false;
 		} else {
-			CustomLogger.info("Data saved to DynamoDB: " + JSON.stringify(data));
+			CustomLogger.verbose("Data saved to DynamoDB: " + JSON.stringify(data));
 			return true;
 		}
 	}
