@@ -10,7 +10,7 @@ exports.LoadDataInterceptor = {
         var persistent = await handlerInput.attributesManager.getPersistentAttributes();
         if (!persistent)
             persistent = {};
-        for (let key in dbUtils_1.dbUtils.getPersistenceDataTemplate()) {
+        for (let key in dbUtils_1.DbUtils.getPersistenceDataTemplate()) {
             if (persistent.hasOwnProperty(key)) {
                 sessionAttributes[key] = persistent[key];
             }

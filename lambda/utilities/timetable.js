@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.timetable = void 0;
+exports.Timetable = void 0;
 const dbUtils_1 = require("./dbUtils");
 const customLogger_1 = require("./customLogger");
 const axios_1 = require("axios");
-var timetable;
-(function (timetable) {
+var Timetable;
+(function (Timetable) {
     /**
      * Returns the timetable for the given parameters
      * @param year Example: "2"
@@ -44,7 +44,7 @@ var timetable;
             return [];
         }
     }
-    timetable.getTimetable = getTimetable;
+    Timetable.getTimetable = getTimetable;
     function filterElement(el) {
         if (el["aule"].length < 0) {
             customLogger_1.CustomLogger.warn("No aule found for element: " + el["cod_modulo"]);
@@ -202,13 +202,13 @@ var timetable;
      */
     async function getClassesList() {
         const updateDays = 30;
-        let classesList = await dbUtils_1.dbUtils.getData("classes");
+        let classesList = await dbUtils_1.DbUtils.getData("classes");
         // Check if classes exist and has a lastUpdated field
         if (classesList === undefined || !("lastUpdated" in classesList)) {
             const classes = await getAvailableClasses();
             if (classes === undefined)
                 return;
-            dbUtils_1.dbUtils.setData("classes", {
+            dbUtils_1.DbUtils.setData("classes", {
                 classes: classes,
                 lastUpdated: new Date().toISOString()
             });
@@ -223,7 +223,7 @@ var timetable;
             const classes = await getAvailableClasses();
             if (classes === undefined)
                 return;
-            dbUtils_1.dbUtils.setData("classes", {
+            dbUtils_1.DbUtils.setData("classes", {
                 classes: classes,
                 lastUpdated: new Date().toISOString()
             });
@@ -232,7 +232,7 @@ var timetable;
         // If we reached here, the class database is valid and updated. return it.
         return classesList["classes"];
     }
-    timetable.getClassesList = getClassesList;
+    Timetable.getClassesList = getClassesList;
     /**
      * Resolves a class ID to a class element.
      *
@@ -262,7 +262,7 @@ var timetable;
         }
         return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined);
     }
-    timetable.resolveClassIDList = resolveClassIDList;
+    Timetable.resolveClassIDList = resolveClassIDList;
     /**
      * Formats a class name to a more readable format.
      * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
@@ -280,4 +280,4 @@ var timetable;
             cleanName, match !== null ? match[2] : "0"
         ];
     }
-})(timetable = exports.timetable || (exports.timetable = {}));
+})(Timetable = exports.Timetable || (exports.Timetable = {}));

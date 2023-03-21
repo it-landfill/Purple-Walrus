@@ -14,7 +14,7 @@ exports.LaunchRequestHandler = {
             updateBehavior: "REPLACE",
             types: []
         };
-        const classList = await timetable_1.timetable.getClassesList();
+        const classList = await timetable_1.Timetable.getClassesList();
         if (classList) {
             let vals = [];
             for (let key in classList) {

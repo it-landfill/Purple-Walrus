@@ -3,7 +3,7 @@ import {DynamoDbPersistenceAdapter} from "ask-sdk-dynamodb-persistence-adapter";
 import AWS = require("aws-sdk");
 import {CustomLogger} from "../utilities/customLogger";
 
-export module dbUtils {
+export module DbUtils {
 	export function getPersistenceDataTemplate(): {
 		[key: string]: string | string[] | undefined;
 	} {

@@ -1,5 +1,5 @@
 import Alexa = require("ask-sdk-core");
-import {slotUtils} from "../utilities/slotUtils";
+import {SlotUtils} from "../utilities/slotUtils";
 
 // Lambda function to handle the intent RemoveSubscribeCourseIntent. This intent is used to unsubscribe a user to a course (e.g. "Togli il corso di
 // Internet of Things dai miei corsi.")
@@ -11,7 +11,7 @@ export const RemoveSubscribeCourseIntentHandler = {
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
 		// Get the course name from the slot.
-		const courses = slotUtils.getSlotValue(handlerInput, "courseName");
+		const courses = SlotUtils.getSlotValue(handlerInput, "courseName");
 		// If the course name is not valid, return an error.
 		if (courses === undefined || courses.length === 0) 
 			return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();

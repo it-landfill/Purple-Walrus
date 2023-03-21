@@ -1,4 +1,4 @@
-export declare module timetable {
+export declare module Timetable {
     export type ClassElement = {
         code: string;
         name: string;

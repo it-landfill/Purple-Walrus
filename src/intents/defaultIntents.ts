@@ -1,7 +1,7 @@
 import Alexa = require("ask-sdk-core");
 import {Directive} from "ask-sdk-model";
 import {CustomLogger} from "../utilities/customLogger";
-import {timetable} from "../utilities/timetable";
+import {Timetable} from "../utilities/timetable";
 
 export const LaunchRequestHandler = {
 	canHandle(handlerInput : Alexa.HandlerInput) {
@@ -14,7 +14,7 @@ export const LaunchRequestHandler = {
 			types: []
 		};
 
-		const classList = await timetable.getClassesList();
+		const classList = await Timetable.getClassesList();
 		if (classList) {
 			let vals = [];
 

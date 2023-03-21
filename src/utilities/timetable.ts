@@ -1,8 +1,8 @@
-import {dbUtils} from "./dbUtils";
+import {DbUtils} from "./dbUtils";
 import {CustomLogger} from "./customLogger";
 import axios from "axios";
 
-export module timetable {
+export module Timetable {
 	export type ClassElement = {
 		code: string;
 		name: string;
@@ -254,14 +254,14 @@ export module timetable {
 
 		let classesList: | {
 			[key: string]: any;
-		} | undefined = await dbUtils.getData("classes");
+		} | undefined = await DbUtils.getData("classes");
 
 		// Check if classes exist and has a lastUpdated field
 		if (classesList === undefined || !("lastUpdated" in classesList)) {
 			const classes = await getAvailableClasses();
 			if (classes === undefined) 
 				return;
-			dbUtils.setData("classes", {
+			DbUtils.setData("classes", {
 				classes: classes,
 				lastUpdated: new Date().toISOString()
 			});
@@ -277,7 +277,7 @@ export module timetable {
 			const classes = await getAvailableClasses();
 			if (classes === undefined) 
 				return;
-			dbUtils.setData("classes", {
+			DbUtils.setData("classes", {
 				classes: classes,
 				lastUpdated: new Date().toISOString()
 			});

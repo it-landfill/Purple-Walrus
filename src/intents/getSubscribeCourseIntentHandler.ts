@@ -1,6 +1,6 @@
 import Alexa = require("ask-sdk-core");
 import {CustomLogger} from "../utilities/customLogger";
-import {timetable} from "../utilities/timetable";
+import {Timetable} from "../utilities/timetable";
 
 // Lambda function to handle the GetSubscribeCourseIntent. This intent is used to get the course that the user subscribed to (e.g. "Che corsi seguo?")
 export const GetSubscribeCourseIntentHandler = {
@@ -11,7 +11,7 @@ export const GetSubscribeCourseIntentHandler = {
 	},
 	async handle(handlerInput : Alexa.HandlerInput) {
 		// Get the list of available classes
-		const classes = timetable.getClassesList();
+		const classes = Timetable.getClassesList();
 
 		// Get the course subscribed by the user from the session attributes
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
@@ -22,7 +22,7 @@ export const GetSubscribeCourseIntentHandler = {
 			return handlerInput.responseBuilder.speak("Non segui nessun corso.").getResponse();
 		
 		// Resolve materie
-		const resolvedMaterie = (await timetable.resolveClassIDList(materie)).map((nateria) => nateria.name);
+		const resolvedMaterie = (await Timetable.resolveClassIDList(materie)).map((nateria) => nateria.name);
 		if (resolvedMaterie.length === 0) {
 			CustomLogger.warn("There was an error resolving the materie list. " + JSON.stringify(materie));
 			return handlerInput.responseBuilder.speak("Si è verificato un errore, per favore riprova.").getResponse();

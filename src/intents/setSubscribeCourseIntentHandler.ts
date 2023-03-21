@@ -1,5 +1,5 @@
 import Alexa = require("ask-sdk-core");
-import {slotUtils} from "../utilities/slotUtils";
+import {SlotUtils} from "../utilities/slotUtils";
 
 // Lambda function to handle the intent GetSubscribeCourseIntent. This intent is used to subscribe a user to a course (e.g. "Iscrivimi al corso di
 // Internet of Things.")
@@ -11,7 +11,7 @@ export const SetSubscribeCourseIntentHandler = {
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
 		// Get the course name from the slot.
-		const courses = slotUtils.getSlotValue(handlerInput, "courseName");
+		const courses = SlotUtils.getSlotValue(handlerInput, "courseName");
 		// If the course name is not valid, return an error.
 		if (courses === undefined || courses.length === 0) 
 			return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();

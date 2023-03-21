@@ -1,12 +1,12 @@
 import Alexa = require("ask-sdk-core");
-import {dbUtils} from "../utilities/dbUtils";
+import {DbUtils} from "../utilities/dbUtils";
 import {CustomLogger} from "../utilities/customLogger";
 
 // Response Interceptors run after all skill handlers complete, before the response is
 // sent to the Alexa servers.
 export const SaveDataInterceptor = {
     async process(handlerInput: Alexa.HandlerInput) {
-        let persistent = dbUtils.getPersistenceDataTemplate();
+        let persistent = DbUtils.getPersistenceDataTemplate();
 
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         for (let key in persistent) {

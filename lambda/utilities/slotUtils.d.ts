@@ -1,5 +1,5 @@
 import Alexa = require("ask-sdk-core");
-export declare module slotUtils {
+export declare module SlotUtils {
     /**
      * Get the slot value resolution from the specified slot.
      * If no slot is found, return undefined.

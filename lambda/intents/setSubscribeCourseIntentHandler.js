@@ -11,7 +11,7 @@ exports.SetSubscribeCourseIntentHandler = {
     },
     handle(handlerInput) {
         // Get the course name from the slot.
-        const courses = slotUtils_1.slotUtils.getSlotValue(handlerInput, "courseName");
+        const courses = slotUtils_1.SlotUtils.getSlotValue(handlerInput, "courseName");
         // If the course name is not valid, return an error.
         if (courses === undefined || courses.length === 0)
             return handlerInput.responseBuilder.speak("Non ho capito il nome del corso.").reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();

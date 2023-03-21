@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbUtils = void 0;
+exports.DbUtils = void 0;
 const Alexa = require("ask-sdk-core");
 const ask_sdk_dynamodb_persistence_adapter_1 = require("ask-sdk-dynamodb-persistence-adapter");
 const AWS = require("aws-sdk");
 const customLogger_1 = require("../utilities/customLogger");
-var dbUtils;
-(function (dbUtils) {
+var DbUtils;
+(function (DbUtils) {
     function getPersistenceDataTemplate() {
         return { materie: undefined };
     }
-    dbUtils.getPersistenceDataTemplate = getPersistenceDataTemplate;
+    DbUtils.getPersistenceDataTemplate = getPersistenceDataTemplate;
     /**
      * Returns the table name to use for the DynamoDB persistence adapter.
      * If the environment variable DYNAMODB_PERSISTENCE_TABLE_NAME is not set or DYNAMODB_LOCAL is true, it means that the skill is running locally,
@@ -76,7 +76,7 @@ var dbUtils;
         }
         return new ask_sdk_dynamodb_persistence_adapter_1.DynamoDbPersistenceAdapter(options);
     }
-    dbUtils.getPersistenceAdapter = getPersistenceAdapter;
+    DbUtils.getPersistenceAdapter = getPersistenceAdapter;
     /**
      * Gets data from DynamoDB.
      * Since DynamoDB on AWS does not allow to create new tables, we will save data as a JSON string in a single field using the new table name as the key.
@@ -112,7 +112,7 @@ var dbUtils;
             return AWS.DynamoDB.Converter.unmarshall(getPromise.Item).attributes;
         }
     }
-    dbUtils.getData = getData;
+    DbUtils.getData = getData;
     /**
      * Sets data to DynamoDB.
      * Since DynamoDB on AWS does not allow to create new tables, we will save data as a JSON string in a single field using the new table name as the key.
@@ -147,5 +147,5 @@ var dbUtils;
             return true;
         }
     }
-    dbUtils.setData = setData;
-})(dbUtils = exports.dbUtils || (exports.dbUtils = {}));
+    DbUtils.setData = setData;
+})(DbUtils = exports.DbUtils || (exports.DbUtils = {}));
