@@ -24,6 +24,21 @@ exports.LaunchRequestHandler = {
                 }
             ];
         }
+        // Get persistent attributes to check if the user is subscribed to any course no longer available.
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        if (sessionAttributes.materie !== undefined) {
+            const courseAvailable = await timetable_1.Timetable.getClassesList();
+            if (courseAvailable) {
+                // For each course, check if the course is in the course list
+                for (const course of sessionAttributes.materie) {
+                    if (!(course in courseAvailable)) {
+                        // Pop the course from the list
+                        const popCourse = sessionAttributes.materie.pop();
+                        customLogger_1.CustomLogger.verbose("Course " + popCourse + " is not available anymore. Removing it from the list.");
+                    }
+                }
+            }
+        }
         const repeat = "Come posso aiutarti?";
         const speech = "Benvenuto in Orari Università. " + repeat;
         customLogger_1.CustomLogger.verbose("Loading dynamic entities: " + JSON.stringify(replaceEntityDirective));
