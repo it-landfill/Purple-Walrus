@@ -22,7 +22,7 @@ exports.RemoveSubscribeCourseIntentHandler = {
         if (sessionAttributes.materie === undefined)
             return handlerInput.responseBuilder.speak("Non sei iscritto a nessun corso.").reprompt("Prima di disiscriverti devi iscriverti ad un corso.").getResponse();
         // Remove the course from the list of subscribed courses.
-        const index = sessionAttributes.materie.indexOf(course.name);
+        const index = sessionAttributes.materie.indexOf(course.id);
         if (index === -1)
             return handlerInput.responseBuilder.speak(`Non sei iscritto al corso di ${course.name}.`).reprompt("Posso fare altro per te?").getResponse();
         else
@@ -31,7 +31,7 @@ exports.RemoveSubscribeCourseIntentHandler = {
         if (sessionAttributes.materie.length === 0)
             delete sessionAttributes.materie;
         // Speak output the course name.
-        const speakOutput = `Sei stato disiscritto con successo al corso ${course.name}.`;
+        const speakOutput = `Sei stato disiscritto con successo al corso ${course.name}. Posso fare altro per te?`;
         // Return the response.
         return handlerInput.responseBuilder.speak(speakOutput).reprompt("La skill è in ascolto.").getResponse();
     }
