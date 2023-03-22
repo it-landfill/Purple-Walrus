@@ -129,24 +129,8 @@
         {
           "values": [
             {
-              "id": "2022-000-379870--I",
               "name": {
-                "value": "computer vision"
-              }
-            },
-            {
-              "id": "2022-000-343110--I",
-              "name": {
-                "value": "internet of things",
-                "synonyms": [
-                  "I.o.t"
-                ]
-              }
-            },
-            {
-              "id": "2022-000-380902--I",
-              "name": {
-                "value": "business intelligence"
+                "value": "-"
               }
             }
           ],
@@ -168,13 +152,7 @@
               "confirmationRequired": false,
               "prompts": {
                 "elicitation": "Elicit.Slot.527967830818.964938621522"
-              },
-              "validations": [
-                {
-                  "type": "hasEntityResolutionMatch",
-                  "prompt": "Slot.Validation.527967830818.964938621522.621409929057"
-                }
-              ]
+              }
             }
           ]
         }
@@ -182,19 +160,6 @@
       "delegationStrategy": "ALWAYS"
     },
     "prompts": [
-      {
-        "id": "Slot.Validation.527967830818.964938621522.621409929057",
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "Il corso {courseName} non è valido."
-          },
-          {
-            "type": "PlainText",
-            "value": "Il corso specificato non è valido."
-          }
-        ]
-      },
       {
         "id": "Elicit.Slot.527967830818.964938621522",
         "variations": [
@@ -206,5 +171,5 @@
       }
     ]
   },
-  "version": "19"
+  "version": "21"
 }
