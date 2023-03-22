@@ -54,7 +54,7 @@ export const CancelAndStopIntentHandler = {
 		);
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
-		const speakOutput = "Goodbye!";
+		const speakOutput = "Arrivederci!";
 
 		return handlerInput.responseBuilder.speak(speakOutput).getResponse();
 	}

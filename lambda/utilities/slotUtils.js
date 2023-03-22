@@ -143,12 +143,22 @@ var SlotUtils;
      * @return {*}  {({"startDate": Date, "endDate": Date} | undefined)} The parsed date.
      */
     function dateParser(dateString) {
-        const timespanDate = new AmazonDateParser(dateString);
-        if (timespanDate)
-            customLogger_1.CustomLogger.verbose("Date parsed: " + JSON.stringify(timespanDate) + ". Original date: " + dateString);
-        else
-            customLogger_1.CustomLogger.warn("Date could not be parsed: " + dateString);
-        return timespanDate;
+        // Check if date is in standard format.
+        if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            // Try parsing the date with the standard date parser.
+            const parsedDate = new Date(dateString);
+            customLogger_1.CustomLogger.verbose("Date parsed: " + JSON.stringify(parsedDate) + ". Original date: " + dateString);
+            return { startDate: parsedDate, endDate: parsedDate };
+        }
+        else {
+            customLogger_1.CustomLogger.verbose("Standard date parsing failed. Trying Amazon date parser.");
+            const timespanDate = new AmazonDateParser(dateString);
+            if (timespanDate)
+                customLogger_1.CustomLogger.verbose("Date parsed: " + JSON.stringify(timespanDate) + ". Original date: " + dateString);
+            else
+                customLogger_1.CustomLogger.warn("Date could not be parsed: " + dateString);
+            return timespanDate;
+        }
     }
     SlotUtils.dateParser = dateParser;
     /**

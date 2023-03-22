@@ -1,7 +1,7 @@
 import Alexa = require("ask-sdk-core");
 import {SlotValue, slu} from "ask-sdk-model";
 import {CustomLogger} from "../utilities/customLogger";
-import { Timetable } from "./timetable";
+import {Timetable} from "./timetable";
 
 const AmazonDateParser = require("amazon-date-parser");
 
@@ -175,16 +175,25 @@ export module SlotUtils {
 	 * @param {string} dateString The date string to parse.
 	 * @return {*}  {({"startDate": Date, "endDate": Date} | undefined)} The parsed date.
 	 */
-	export function dateParser(dateString : string): {
+	export function dateParser(dateString : string): | {
 		startDate: Date;
-		endDate: Date
+		endDate: Date;
 	} | undefined {
-		const timespanDate = new AmazonDateParser(dateString);
-		if (timespanDate) 
-			CustomLogger.verbose("Date parsed: " + JSON.stringify(timespanDate) + ". Original date: " + dateString);
-		else 
-			CustomLogger.warn("Date could not be parsed: " + dateString);
-		return timespanDate;
+		// Check if date is in standard format.
+		if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+			// Try parsing the date with the standard date parser.
+			const parsedDate = new Date(dateString);
+			CustomLogger.verbose("Date parsed: " + JSON.stringify(parsedDate) + ". Original date: " + dateString);
+			return {startDate: parsedDate, endDate: parsedDate};
+		} else {
+			CustomLogger.verbose("Standard date parsing failed. Trying Amazon date parser.");
+			const timespanDate = new AmazonDateParser(dateString);
+			if (timespanDate) 
+				CustomLogger.verbose("Date parsed: " + JSON.stringify(timespanDate) + ". Original date: " + dateString);
+			else 
+				CustomLogger.warn("Date could not be parsed: " + dateString);
+			return timespanDate;
+		}
 	}
 
 	/**
@@ -212,7 +221,7 @@ export module SlotUtils {
 	 * @param {string[]} classIDList The list of class IDs to resolve
 	 * @return {*}  {Promise<ClassElement[]>} The list of class elements
 	 */
-	export async function resolveClassIDList(classIDList : string[]): Promise<Timetable.ClassElement[]> {
+	export async function resolveClassIDList(classIDList : string[]): Promise < Timetable.ClassElement[] > {
 		const classes = await Timetable.getClassesList();
 
 		// If the classes list is undefined, return an empty array
