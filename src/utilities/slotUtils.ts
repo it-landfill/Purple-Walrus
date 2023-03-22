@@ -1,6 +1,9 @@
 import Alexa = require("ask-sdk-core");
 import {SlotValue, slu} from "ask-sdk-model";
 import {CustomLogger} from "../utilities/customLogger";
+import { Timetable } from "./timetable";
+
+const AmazonDateParser = require("amazon-date-parser");
 
 export module SlotUtils {
 	type SlotResolution = {
@@ -163,5 +166,86 @@ export module SlotUtils {
 		}
 
 		return resolution;
+	}
+
+	/**
+	 * Parse the amazon date format to a start and end date format.
+	 *
+	 * @export
+	 * @param {string} dateString The date string to parse.
+	 * @return {*}  {({"startDate": Date, "endDate": Date} | undefined)} The parsed date.
+	 */
+	export function dateParser(dateString : string): {
+		startDate: Date;
+		endDate: Date
+	} | undefined {
+		const timespanDate = new AmazonDateParser(dateString);
+		if (timespanDate) 
+			CustomLogger.verbose("Date parsed: " + JSON.stringify(timespanDate) + ". Original date: " + dateString);
+		else 
+			CustomLogger.warn("Date could not be parsed: " + dateString);
+		return timespanDate;
+	}
+
+	/**
+	 * Resolves a class ID to a class element.
+	 *
+	 * @param {ClassDictionary} classes The classes list
+	 * @param {string} classID The class ID to resolve
+	 * @return {*}  {(ClassElement | undefined)} The class element or undefined if not found
+	 */
+	function resolveClassID(classes : Timetable.ClassDictionary, classID : string): Timetable.ClassElement | undefined {
+		// Check if the class is in the classes list, if not return undefined
+		if (!(classID in classes)) {
+			CustomLogger.warn("Class " + classID + " not found in classes list.");
+			return;
+		}
+
+		// If the class is in the classes list, return it
+		return classes[classID];
+	}
+
+	/**
+	 * Resolves a list of class IDs to a list of class elements.
+	 *
+	 * @export
+	 * @param {string[]} classIDList The list of class IDs to resolve
+	 * @return {*}  {Promise<ClassElement[]>} The list of class elements
+	 */
+	export async function resolveClassIDList(classIDList : string[]): Promise<Timetable.ClassElement[]> {
+		const classes = await Timetable.getClassesList();
+
+		// If the classes list is undefined, return an empty array
+		if (classes === undefined) {
+			CustomLogger.warn("Classes list is undefined.");
+			return [];
+		}
+
+		// Resolve the class ID for each element and return the list removing the elements that failed to resolve (are undefined)
+		return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined)as Timetable.ClassElement[];
+	}
+
+	/**
+	 * Formats a class name to a more readable format.
+	 * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
+	 * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
+	 *
+	 * @export
+	 * @param {string} name The class name to format
+	 * @return {*}  {string[]} An array with two elements, the formatted name and the module number (string)
+	 */
+	export function cleanClassName(name : string): string[]{
+		// Regex to match  / (2) Modulo 2
+		const regex = /(.+)(?: \/ \((\d)\) Modulo \d)/;
+		const match = regex.exec(name);
+		// If the regex matches, return the first group (The class name without  / (2) Modulo 2), otherwise return the original name (It does not have a
+		// module number) Also, trim the name and capitalize the first letter
+		let cleanName = (match !== null ? match[1] : name).trim().toLowerCase();
+		cleanName = cleanName[0].toUpperCase() + cleanName.slice(1);
+
+		// Return two parameters, the clean name and the module number (string)
+		return [
+			cleanName, match !== null ? match[2] : "0"
+		];
 	}
 }

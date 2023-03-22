@@ -1,9 +1,9 @@
 import {DbUtils} from "./dbUtils";
 import {CustomLogger} from "./customLogger";
 import axios from "axios";
+import { SlotUtils } from "./slotUtils";
 
 export module Timetable {
-
 	/**
 	 * This represents a single course
 	 */
@@ -19,14 +19,14 @@ export module Timetable {
 	/**
 	 * This is the dictionary of all the courses available with the course code as key
 	 */
-	type ClassDictionary = {
+	export type ClassDictionary = {
 		[key: string]: ClassElement;
 	};
 
 	/**
 	 * This represents a single course entry used by dynamic entity resolution
 	 */
-	type ClassEntity = {
+	export type ClassEntity = {
 		id: string;
 		name: {
 			value: string;
@@ -59,7 +59,6 @@ export module Timetable {
 	 * @returns {Promise<object[]>} The timetable
 	 */
 	export async function getTimetable(year : string, curricula : string, start : Date, end : Date, insegnamenti? : string[]): Promise<ClassDetails[]> {
-
 		// Query parameters
 		let params = {
 			start: start.toISOString().split("T")[0],
@@ -77,8 +76,7 @@ export module Timetable {
 			params: params
 		};
 
-		// If the user has specified some courses, filter the query with them
-		// Note that here we are also resolving multiple modules for the same course
+		// If the user has specified some courses, filter the query with them Note that here we are also resolving multiple modules for the same course
 		if (insegnamenti && insegnamenti.length > 0) {
 			// Get the list of all the courses
 			const allClasses = await getClassesList();
@@ -131,7 +129,8 @@ export module Timetable {
 	export async function getTimetableFromClassList(classes : string[], start? : Date, end? : Date): Promise < ClassDetails[] | undefined > {
 		// Since the university calendar only allows to query by year and curriculum, we need to divide the classes by year and curriculum.
 		let queryQueue: {
-			[key: string]: { // Year
+			[key: string]: {
+				// Year
 				[key: string]: string[]; // Curriculum
 			};
 		} = {};
@@ -143,7 +142,7 @@ export module Timetable {
 			CustomLogger.error("Error while fetching classes list");
 			return;
 		}
-	
+
 		// Divide classes by year and curriculum
 		for (let key of classes) {
 			if (!(key in classesList)) {
@@ -155,6 +154,7 @@ export module Timetable {
 			// If the class year is not in the query queue, add it
 			if (!(classObj.year in queryQueue)) 
 				queryQueue[classObj.year] = {};
+			
 			// If the class curriculum is not in the query queue, add it
 			if (!(classObj.curriculum in queryQueue[classObj.year])) 
 				queryQueue[classObj.year][classObj.curriculum] = [];
@@ -183,7 +183,6 @@ export module Timetable {
 		return timetable;
 	}
 
-	
 	/**
 	 * Given a json object, it convers it to a ClassDetails object
 	 *
@@ -296,7 +295,7 @@ export module Timetable {
 					continue;
 				
 				// Clean the class name, removing the module number and trimming it
-				const cleanRes = cleanClassName(el["title"]);
+				const cleanRes = SlotUtils.cleanClassName(el["title"]);
 
 				// Create the class object
 				let classObj: ClassElement = {
@@ -426,68 +425,6 @@ export module Timetable {
 
 		// If we reached here, the class database is valid and updated. return it.
 		return classesList["classes"] as ClassDictionary;
-	}
-
-	/**
-	 * Resolves a class ID to a class element.
-	 *
-	 * @param {ClassDictionary} classes The classes list
-	 * @param {string} classID The class ID to resolve
-	 * @return {*}  {(ClassElement | undefined)} The class element or undefined if not found
-	 */
-	function resolveClassID(classes : ClassDictionary, classID : string): ClassElement | undefined {
-		// Check if the class is in the classes list, if not return undefined
-		if (!(classID in classes)) {
-			CustomLogger.warn("Class " + classID + " not found in classes list.");
-			return;
-		}
-
-		// If the class is in the classes list, return it
-		return classes[classID];
-	}
-
-	/**
-	 * Resolves a list of class IDs to a list of class elements.
-	 *
-	 * @export
-	 * @param {string[]} classIDList The list of class IDs to resolve
-	 * @return {*}  {Promise<ClassElement[]>} The list of class elements
-	 */
-	export async function resolveClassIDList(classIDList : string[]): Promise<ClassElement[]> {
-		const classes = await getClassesList();
- 
-		// If the classes list is undefined, return an empty array
-		if (classes === undefined) {
-			CustomLogger.warn("Classes list is undefined.");
-			return [];
-		}
-
-		// Resolve the class ID for each element and return the list removing the elements that failed to resolve (are undefined)
-		return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined)as ClassElement[];
-	}
-
-	/**
-	 * Formats a class name to a more readable format.
-	 * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
-	 * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
-	 *
-	 * @export
-	 * @param {string} name The class name to format
-	 * @return {*}  {string[]} An array with two elements, the formatted name and the module number (string)
-	 */
-	export function cleanClassName(name : string): string[]{
-		// Regex to match  / (2) Modulo 2
-		const regex = /(.+)(?: \/ \((\d)\) Modulo \d)/;
-		const match = regex.exec(name);
-		// If the regex matches, return the first group (The class name without  / (2) Modulo 2), otherwise return the original name (It does not have a module number)
-		// Also, trim the name and capitalize the first letter
-		let cleanName = (match !== null ? match[1] : name).trim().toLowerCase();
-		cleanName = cleanName[0].toUpperCase() + cleanName.slice(1);
-
-		// Return two parameters, the clean name and the module number (string)
-		return [
-			cleanName, match !== null ? match[2] : "0"
-		];
 	}
 
 	/**

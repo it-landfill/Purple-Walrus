@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SlotUtils = void 0;
 const Alexa = require("ask-sdk-core");
 const customLogger_1 = require("../utilities/customLogger");
+const timetable_1 = require("./timetable");
+const AmazonDateParser = require("amazon-date-parser");
 var SlotUtils;
 (function (SlotUtils) {
     /**
@@ -133,4 +135,77 @@ var SlotUtils;
         }
         return resolution;
     }
+    /**
+     * Parse the amazon date format to a start and end date format.
+     *
+     * @export
+     * @param {string} dateString The date string to parse.
+     * @return {*}  {({"startDate": Date, "endDate": Date} | undefined)} The parsed date.
+     */
+    function dateParser(dateString) {
+        const timespanDate = new AmazonDateParser(dateString);
+        if (timespanDate)
+            customLogger_1.CustomLogger.verbose("Date parsed: " + JSON.stringify(timespanDate) + ". Original date: " + dateString);
+        else
+            customLogger_1.CustomLogger.warn("Date could not be parsed: " + dateString);
+        return timespanDate;
+    }
+    SlotUtils.dateParser = dateParser;
+    /**
+     * Resolves a class ID to a class element.
+     *
+     * @param {ClassDictionary} classes The classes list
+     * @param {string} classID The class ID to resolve
+     * @return {*}  {(ClassElement | undefined)} The class element or undefined if not found
+     */
+    function resolveClassID(classes, classID) {
+        // Check if the class is in the classes list, if not return undefined
+        if (!(classID in classes)) {
+            customLogger_1.CustomLogger.warn("Class " + classID + " not found in classes list.");
+            return;
+        }
+        // If the class is in the classes list, return it
+        return classes[classID];
+    }
+    /**
+     * Resolves a list of class IDs to a list of class elements.
+     *
+     * @export
+     * @param {string[]} classIDList The list of class IDs to resolve
+     * @return {*}  {Promise<ClassElement[]>} The list of class elements
+     */
+    async function resolveClassIDList(classIDList) {
+        const classes = await timetable_1.Timetable.getClassesList();
+        // If the classes list is undefined, return an empty array
+        if (classes === undefined) {
+            customLogger_1.CustomLogger.warn("Classes list is undefined.");
+            return [];
+        }
+        // Resolve the class ID for each element and return the list removing the elements that failed to resolve (are undefined)
+        return classIDList.map((el) => resolveClassID(classes, el)).filter((el) => el !== undefined);
+    }
+    SlotUtils.resolveClassIDList = resolveClassIDList;
+    /**
+     * Formats a class name to a more readable format.
+     * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
+     * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
+     *
+     * @export
+     * @param {string} name The class name to format
+     * @return {*}  {string[]} An array with two elements, the formatted name and the module number (string)
+     */
+    function cleanClassName(name) {
+        // Regex to match  / (2) Modulo 2
+        const regex = /(.+)(?: \/ \((\d)\) Modulo \d)/;
+        const match = regex.exec(name);
+        // If the regex matches, return the first group (The class name without  / (2) Modulo 2), otherwise return the original name (It does not have a
+        // module number) Also, trim the name and capitalize the first letter
+        let cleanName = (match !== null ? match[1] : name).trim().toLowerCase();
+        cleanName = cleanName[0].toUpperCase() + cleanName.slice(1);
+        // Return two parameters, the clean name and the module number (string)
+        return [
+            cleanName, match !== null ? match[2] : "0"
+        ];
+    }
+    SlotUtils.cleanClassName = cleanClassName;
 })(SlotUtils = exports.SlotUtils || (exports.SlotUtils = {}));

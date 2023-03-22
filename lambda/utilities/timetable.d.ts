@@ -2,7 +2,7 @@ export declare module Timetable {
     /**
      * This represents a single course
      */
-    export type ClassElement = {
+    type ClassElement = {
         code: string;
         name: string;
         year: string;
@@ -28,7 +28,7 @@ export declare module Timetable {
     /**
      * This represents info on a specific class fetched from the university calendar
      */
-    export type ClassDetails = {
+    type ClassDetails = {
         codice: string;
         docente: string;
         start: string;
@@ -49,7 +49,7 @@ export declare module Timetable {
      * @param insegnamenti
      * @returns {Promise<object[]>} The timetable
      */
-    export function getTimetable(year: string, curricula: string, start: Date, end: Date, insegnamenti?: string[]): Promise<ClassDetails[]>;
+    function getTimetable(year: string, curricula: string, start: Date, end: Date, insegnamenti?: string[]): Promise<ClassDetails[]>;
     /**
      * Queries the university calendar and returns the list of all the courses matching the specified criterias
      *
@@ -59,7 +59,7 @@ export declare module Timetable {
      * @param {Date} [end] The end date of the timetable (if omitted it will be one week from now)
      * @return {*}  {(Promise < ClassDetails[] | undefined >)} The timetable
      */
-    export function getTimetableFromClassList(classes: string[], start?: Date, end?: Date): Promise<ClassDetails[] | undefined>;
+    function getTimetableFromClassList(classes: string[], start?: Date, end?: Date): Promise<ClassDetails[] | undefined>;
     /**
      * Returns the available classes for the current year.
      * The classes are either loadaed from the database or fetched from the university website if not present or to old.
@@ -67,25 +67,7 @@ export declare module Timetable {
      * @export
      * @return {*}  {(Promise < object | undefined >)}
      */
-    export function getClassesList(): Promise<ClassDictionary | undefined>;
-    /**
-     * Resolves a list of class IDs to a list of class elements.
-     *
-     * @export
-     * @param {string[]} classIDList The list of class IDs to resolve
-     * @return {*}  {Promise<ClassElement[]>} The list of class elements
-     */
-    export function resolveClassIDList(classIDList: string[]): Promise<ClassElement[]>;
-    /**
-     * Formats a class name to a more readable format.
-     * Example: "LABORATORIO DI MAKING / (2) Modulo 2" -> "Laboratorio di Making"
-     * Example: "LABORATORIO DI MAKING" -> "Laboratorio di Making"
-     *
-     * @export
-     * @param {string} name The class name to format
-     * @return {*}  {string[]} An array with two elements, the formatted name and the module number (string)
-     */
-    export function cleanClassName(name: string): string[];
+    function getClassesList(): Promise<ClassDictionary | undefined>;
     /**
      * Generates the dynamic class entries for entity resolution.
      * The entries are generated from the classes list and will be passed to alexa on skill launch (on launchIntent).
@@ -98,6 +80,5 @@ export declare module Timetable {
      * 		}
      * 	}[] | undefined >)}
      */
-    export function generateDynamicClassEntries(): Promise<ClassEntity[] | undefined>;
-    export {};
+    function generateDynamicClassEntries(): Promise<ClassEntity[] | undefined>;
 }
