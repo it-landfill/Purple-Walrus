@@ -25,7 +25,7 @@ import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
 // Utilities
 import {DbUtils} from "./utilities/dbUtils";
 import {CustomLogger} from "./utilities/customLogger";
-CustomLogger.info("Starting Purple Walrus handler at " + new Date().toISOString());
+CustomLogger.info("Starting Purple Walrus handler at ");
 
 /**
  * This handler acts as the entry point for your skill, routing all request and response

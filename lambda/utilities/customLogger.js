@@ -30,14 +30,14 @@ var CustomLogger;
     function info(msg) {
         console.log("\x1B[90m[PW]\x1B[1;32m[INFO]\x1B[0m\t" + toString(msg));
         if (localhost) {
-            logToFile("[PW][INFO]\t" + toString(msg) + "\n");
+            logToFile("[" + new Date().toISOString() + "][PW][INFO]\t" + toString(msg) + "\n");
         }
     }
     CustomLogger.info = info;
     function error(msg) {
         console.error("\x1B[90m[PW]\x1B[1;31m[ERROR]\x1B[0m\t" + toString(msg));
         if (localhost) {
-            logToFile("[PW][ERROR]\t" + toString(msg) + "\n");
+            logToFile("[" + new Date().toISOString() + "][PW][ERROR]\t" + toString(msg) + "\n");
         }
     }
     CustomLogger.error = error;
@@ -45,21 +45,21 @@ var CustomLogger;
         ;
         console.warn("\x1B[90m[PW]\x1B[1;33m[WARN]\x1B[0m\t" + toString(msg));
         if (localhost) {
-            logToFile("[PW][WARN]\t" + toString(msg) + "\n");
+            logToFile("[" + new Date().toISOString() + "][PW][WARN]\t" + toString(msg) + "\n");
         }
     }
     CustomLogger.warn = warn;
     function log(msg) {
         console.log("\x1B[90m[PW]\x1B[1;36m[DEBUG]\x1B[0m\t" + toString(msg));
         if (localhost) {
-            logToFile("[PW][DEBUG]\t" + toString(msg) + "\n");
+            logToFile("[" + new Date().toISOString() + "][PW][DEBUG]\t" + toString(msg) + "\n");
         }
     }
     CustomLogger.log = log;
     function verbose(msg) {
         console.log("\x1B[90m[PW]\x1B[1;34m[VERBOSE]\t" + toString(msg) + "\x1B[0m");
         if (localhost) {
-            logToFile("[PW][VERBOSE]\t" + toString(msg) + "\n");
+            logToFile("[" + new Date().toISOString() + "][PW][VERBOSE]\t" + toString(msg) + "\n");
         }
     }
     CustomLogger.verbose = verbose;

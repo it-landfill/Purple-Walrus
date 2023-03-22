@@ -23,7 +23,7 @@ const loadDataInterceptor_1 = require("./interceptors/loadDataInterceptor");
 // Utilities
 const dbUtils_1 = require("./utilities/dbUtils");
 const customLogger_1 = require("./utilities/customLogger");
-customLogger_1.CustomLogger.info("Starting Purple Walrus handler at " + new Date().toISOString());
+customLogger_1.CustomLogger.info("Starting Purple Walrus handler at ");
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
