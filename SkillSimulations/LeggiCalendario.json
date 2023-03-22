@@ -1,0 +1,11 @@
+{
+  "skillId": "amzn1.ask.skill.1305a842-e155-4424-b2aa-2b814d46452e",
+  "locale": "it-IT",
+  "userInput": [
+    "apri orari università",
+    "leggi il calendario per domani di emerging",
+    "leggi il calendario per domani",
+    "leggi il calendario di emerging",
+	"stop"
+  ]
+}

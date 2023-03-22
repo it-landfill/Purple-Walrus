@@ -13,44 +13,71 @@ export module IntentsLorenzo {
 		},
 		async handle(handlerInput : Alexa.HandlerInput) {
 			// Get the course name from the slot and timespan from the slot.
-			const course = SlotUtils.getSlotValue(handlerInput, "courseName");
-			const timespan = SlotUtils.getSlotValue(handlerInput, "timespan");
+			const courseSlot = SlotUtils.getSlotValue(handlerInput, "courseName");
+			const timespanSlot = SlotUtils.getSlotValue(handlerInput, "timespan");
+
 			// Check if course and/or timespan are filled
-			if (course === undefined && timespan === undefined) {
-				return handlerInput.responseBuilder.speak("Non hai specificato il corso e il periodo di tempo. Riprova.").getResponse();
-			} else if (course === undefined) {
-				// Handle the case where the user has specified the timespan but not the course
+			if (courseSlot === undefined && timespanSlot === undefined) {
+				//TODO: If no parameter is specified, return the calendar for today.
+				return handlerInput.responseBuilder.speak("Non hai specificato il corso e il periodo di tempo. Riprova.").reprompt("La skill è in ascolto.").getResponse();
 			}
-			// Get user subscribe courses from persistence adapter
-			const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-			const materie = sessionAttributes.materie;
-			const listMaterie = await Timetable.getClassesList();
-			// Generate the schedule for the user
-			if (materie === undefined || listMaterie === undefined) 
-				return handlerInput.responseBuilder.speak("Non sei iscritto a nessun corso. Iscriviti ad un corso per poter leggere il calendario.").reprompt(
-					"Riprova verificando che il corso che cerchi sia valido."
-				).getResponse();
-			
-			const gino = listMaterie[materie[0]];
-			CustomLogger.log(gino);
-			// get actual time
-			const now = new Date();
+
+			// ---- Course ID Slot----
+			let courseIDList: string[] = [];
+			if (courseSlot === undefined || courseSlot.length === 0) {
+				// Handle the case where the user has specified the timespan but not the course In this case we use the course subscribed by the user
+
+				const materie: string[] = handlerInput.attributesManager.getSessionAttributes().materie;
+
+				// If the user is not subscribed to any course, return an error message
+				if (materie === undefined) {
+					return handlerInput.responseBuilder.speak(
+						"Non sei iscritto a nessun corso. Iscriviti ad un corso o specifica il nome del corso per poter leggere il calendario."
+					).reprompt("Riprova verificando che il corso che cerchi sia valido.").getResponse();
+				}
+
+				// Populate courseIDList with the course IDs
+				courseIDList = materie;
+			} else {
+				// Handle the case where the user has specified the course Get the course ID from the course name We use courseSlot[0] since the first element is the
+				// most probable one
+				const courseID = courseSlot[0].id;
+
+				// Populate courseIDList with the course ID
+				courseIDList = [courseID];
+			}
+
+			// ---- Timespan Slot ----
+			let timespan: string;
+			if (timespanSlot === undefined) {
+				// Handle the case where the user has specified the course but not the timespan Get the default value for the slot (1D)
+				timespan = "1D";
+			} else {
+				// Handle the case where the user has specified the timespan We use timespanSlot[0] since the first element is the most probable one
+				timespan = timespanSlot[0].id;
+			}
+			// Generate start and end dates based on the timespan get actual time
+			const start = new Date();
 			// Add one week to the actual time
-			const nextWeek = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+			let end = new Date();
+			end.setDate(end.getDate() + 1);
 
-			const output = await Timetable.getTimetable(gino.year, gino.curriculum, now, nextWeek, [gino.code]);
+			// ---- Schedule generation ----
+			const timetable = await Timetable.getTimetableFromClassList(courseIDList, start, end);
 			// Print the schedule
-			CustomLogger.info(output);
+			CustomLogger.info(timetable);
 
-			// Get the course name from the slot and timespan from the slot. const course = slotUtils.getSlotValue(handlerInput, "courseName"); const timespan =
-			// slotUtils.getSlotValue(handlerInput, "timespan"); Based on the information provided by the user, get the schedule.
-			let speakOutput = `Il giorno 1/1/2019 hai le seguenti lezioni:`;
-			output.forEach((element : any) => {
-				speakOutput += ` ${element.title} alle ${element.start.split("T")[1]} in ${element.aula.edificio},`;
-			});
+			// ---- Response ----
+			let speakOutput: string = "";
+			if (timetable && timetable.length > 0) {
+				speakOutput += "Il giorno " + start.toISOString().split("T")[0] + " hai le seguenti lezioni:";
+				timetable.forEach((element : Timetable.ClassDetails) => {
+					speakOutput += ` ${element.title} alle ${element.start.split("T")[1]} in ${element.aula.edificio},`;
+				});
+			}
 
 			return (handlerInput.responseBuilder.speak(speakOutput)
-			// .reprompt('add a reprompt if you want to keep the session open for the user to respond')
+				 .reprompt('La skill è in ascolto')
 				.getResponse());
 		}
 	};

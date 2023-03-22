@@ -8,3 +8,4 @@ lambda/node_modules
 /docker
 /Purple-Walrus-Node.code-workspace
 /tools/class_updater/__pycache__
+/logs
