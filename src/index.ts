@@ -12,6 +12,7 @@ import {IntentsLorenzo} from "./intents/IntentsLorenzo";
 import {SetSubscribeCourseIntentHandler} from "./intents/setSubscribeCourseIntentHandler";
 import {GetSubscribeCourseIntentHandler} from "./intents/getSubscribeCourseIntentHandler";
 import {RemoveSubscribeCourseIntentHandler} from "./intents/removeSubscribeCourseIntentHandler";
+import { GetScheduleIntentHander } from "./intents/getScheduleIntentHandler";
 
 // Error handlers
 import {ErrorHandler} from "./errors/baseErrorHandler";
@@ -34,7 +35,8 @@ CustomLogger.info("Starting Purple Walrus handler");
  * */
 exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	IntentsAlessandro.HelloWorldIntentHandler,
-	IntentsLorenzo.GetWeeklyScheduleIntentHander,
+	//IntentsLorenzo.GetWeeklyScheduleIntentHander,
+	GetScheduleIntentHander,
 	RemoveSubscribeCourseIntentHandler,
 	SetSubscribeCourseIntentHandler,
 	GetSubscribeCourseIntentHandler,
