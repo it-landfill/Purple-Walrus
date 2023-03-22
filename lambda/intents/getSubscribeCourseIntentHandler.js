@@ -26,6 +26,6 @@ exports.GetSubscribeCourseIntentHandler = {
         }
         // If lenght of materie is 1, use the singular form of the sentence, otherwise use the plural form
         const speakOutput = "Sei iscritto " + (resolvedMaterie.length === 1 ? `alla seguente materia: ` : `alle seguenti materie: `) + resolvedMaterie + ".";
-        return handlerInput.responseBuilder.speak(speakOutput).getResponse();
+        return handlerInput.responseBuilder.speak(speakOutput).reprompt("La skill è in ascolto.").getResponse();
     }
 };
