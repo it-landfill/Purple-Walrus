@@ -59,7 +59,7 @@ exports.CancelAndStopIntentHandler = {
         return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && (Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.CancelIntent" || Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.StopIntent"));
     },
     handle(handlerInput) {
-        const speakOutput = "Goodbye!";
+        const speakOutput = "Arrivederci!";
         return handlerInput.responseBuilder.speak(speakOutput).getResponse();
     }
 };

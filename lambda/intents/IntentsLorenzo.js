@@ -16,11 +16,6 @@ var IntentsLorenzo;
             // Get the course name from the slot and timespan from the slot.
             const courseSlot = slotUtils_1.SlotUtils.getSlotValue(handlerInput, "courseName");
             const timespanSlot = slotUtils_1.SlotUtils.getSlotValue(handlerInput, "timespan");
-            // Check if course and/or timespan are filled
-            if (courseSlot === undefined && timespanSlot === undefined) {
-                //TODO: If no parameter is specified, return the calendar for today.
-                return handlerInput.responseBuilder.speak("Non hai specificato il corso e il periodo di tempo. Riprova.").reprompt("La skill è in ascolto.").getResponse();
-            }
             // ---- Course ID Slot----
             let courseIDList = [];
             if (courseSlot === undefined || courseSlot.length === 0) {
@@ -40,21 +35,33 @@ var IntentsLorenzo;
                 // Populate courseIDList with the course ID
                 courseIDList = [courseID];
             }
-            // ---- Timespan Slot ----
-            let timespan;
+            // ---- Timespan Slot ---- Generate start and end dates
+            let start;
+            // Add one week to the actual time
+            let end;
             if (timespanSlot === undefined) {
-                // Handle the case where the user has specified the course but not the timespan Get the default value for the slot (1D)
-                timespan = "1D";
+                // Handle the case where the user has specified the course but not the timespan Fallback to default date: today
+                start = new Date();
+                end = new Date();
             }
             else {
-                // Handle the case where the user has specified the timespan We use timespanSlot[0] since the first element is the most probable one
-                timespan = timespanSlot[0].id;
+                // Handle the case where the user has specified the timespan We use timespanSlot[0] since the first element is the most probable one Get the date
+                // string from the timespan slot
+                const timespan = timespanSlot[0].name;
+                // Parse the alexa date string to a Date object
+                const timespanDate = slotUtils_1.SlotUtils.dateParser(timespan);
+                if (timespanDate) {
+                    // Split the object in start and end
+                    start = timespanDate.startDate;
+                    end = timespanDate.endDate;
+                }
+                else {
+                    // Handle the case where the user has specified an invalid date
+                    customLogger_1.CustomLogger.warn("Invalid date, fallback to default date");
+                    start = new Date();
+                    end = new Date();
+                }
             }
-            // Generate start and end dates based on the timespan get actual time
-            const start = new Date();
-            // Add one week to the actual time
-            let end = new Date();
-            end.setDate(end.getDate() + 1);
             // ---- Schedule generation ----
             const timetable = await timetable_1.Timetable.getTimetableFromClassList(courseIDList, start, end);
             // Print the schedule
@@ -64,12 +71,10 @@ var IntentsLorenzo;
             if (timetable && timetable.length > 0) {
                 speakOutput += "Il giorno " + start.toISOString().split("T")[0] + " hai le seguenti lezioni:";
                 timetable.forEach((element) => {
-                    speakOutput += ` ${element.title} alle ${element.start.split("T")[1]} in ${element.aula.edificio},`;
+                    speakOutput += ` ${slotUtils_1.SlotUtils.cleanClassName(element.title)[0]} alle ${element.start.split("T")[1]} in ${element.aula.edificio},`;
                 });
             }
-            return (handlerInput.responseBuilder.speak(speakOutput)
-                .reprompt('La skill è in ascolto')
-                .getResponse());
+            return handlerInput.responseBuilder.speak(speakOutput).reprompt("La skill è in ascolto").getResponse();
         }
     };
 })(IntentsLorenzo = exports.IntentsLorenzo || (exports.IntentsLorenzo = {}));
