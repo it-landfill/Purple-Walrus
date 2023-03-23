@@ -27,6 +27,7 @@ exports.LaunchRequestHandler = {
         // Get persistent attributes to check if the user is subscribed to any course no longer available.
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         if (sessionAttributes.materie !== undefined) {
+            let listCoursePopped = [];
             const courseAvailable = await timetable_1.Timetable.getClassesList();
             if (courseAvailable) {
                 // For each course, check if the course is in the course list
@@ -35,8 +36,16 @@ exports.LaunchRequestHandler = {
                         // Pop the course from the list
                         const popCourse = sessionAttributes.materie.pop();
                         customLogger_1.CustomLogger.verbose("Course " + popCourse + " is not available anymore. Removing it from the list.");
+                        listCoursePopped.push(popCourse);
                     }
                 }
+            }
+            if (listCoursePopped.length > 0) {
+                const repeat = "Come posso aiutarti?";
+                // TODO: listCoursePopped is an array of course ids. We need to get the course name from the id?
+                const poppedCourseInfo = "Dall'ultima sessione sono stati rimossi i seguenti corsi perchè non più disponibili: " + listCoursePopped.join(", ") + ". ";
+                const speech = "Benvenuto in Orari Università. " + poppedCourseInfo + repeat;
+                return handlerInput.responseBuilder.speak(speech).reprompt(repeat).addDirective(replaceEntityDirective).getResponse();
             }
         }
         const repeat = "Come posso aiutarti?";
