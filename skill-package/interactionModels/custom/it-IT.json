@@ -73,7 +73,27 @@
             "Che lezioni devo seguire {timespan}",
             "Che corsi ho {timespan} "
           ]
-        }
+        },
+		{
+			"name": "SetSubscribeCourseIntent",
+			"slots": [
+			  {
+				"name": "courseName",
+				"type": "ClassNames",
+				"samples": [
+				  "{courseName}",
+				  "A {courseName}",
+				  "Al corso di {courseName}"
+				]
+			  }
+			],
+			"samples": [
+			  "Aggiungi {courseName} ai corsi che seguo",
+			  "Metti tra i corsi che seguo {courseName}",
+			  "Iscrivimi a {courseName}",
+			  "Iscrivimi al corso di {courseName}"
+			]
+		  }
       ],
       "types": [
         {
@@ -90,5 +110,5 @@
       ]
     }
   },
-  "version": "34"
+  "version": "35"
 }
