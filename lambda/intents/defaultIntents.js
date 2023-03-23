@@ -59,7 +59,8 @@ exports.HelpIntentHandler = {
         return (Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" && Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.HelpIntent");
     },
     handle(handlerInput) {
-        const speakOutput = "You can say hello to me! How can I help?";
+        const repeat = "Come posso aiutarti?";
+        const speakOutput = "La skill orari università ti permette di sapere gli orari delle lezioni del corso di informatica magistrale di Bologna. Ad esempio, puoi chiedermi gli orari di una lezione, oppure di aggiungere una lezione alla tua lista dei corsi che segui. " + repeat;
         return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
     }
 };
