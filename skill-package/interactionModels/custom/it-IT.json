@@ -91,6 +91,26 @@
             "Dai corsi che seguo elimina il corso di {courseName}",
             "Rimuovi {courseName} dai corsi che seguo"
           ]
+        },
+        {
+          "name": "SetSubscribeCourseIntent",
+          "slots": [
+            {
+              "name": "courseName",
+              "type": "ClassNames",
+              "samples": [
+                "Al corso di {courseName}",
+                "A {courseName}",
+                "{courseName}"
+              ]
+            }
+          ],
+          "samples": [
+            "Iscrivimi al corso di {courseName}",
+            "Iscrivimi a {courseName}",
+            "Metti tra i corsi che seguo {courseName}",
+            "Aggiungi {courseName} ai corsi che seguo"
+          ]
         }
       ],
       "types": [
@@ -106,7 +126,39 @@
           "name": "ClassNames"
         }
       ]
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "SetSubscribeCourseIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "courseName",
+              "type": "ClassNames",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1038327326023.535870990403"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.1038327326023.535870990403",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "A quale corso vuoi iscriverti?"
+          }
+        ]
+      }
+    ]
   },
-  "version": "37"
+  "version": "39"
 }
