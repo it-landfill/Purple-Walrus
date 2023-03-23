@@ -73,103 +73,22 @@
             "Che lezioni devo seguire {timespan}",
             "Che corsi ho {timespan} "
           ]
-        },
-        {
-          "name": "SetSubscribeCourseIntent",
-          "slots": [
-            {
-              "name": "courseName",
-              "type": "ClassNames",
-              "samples": [
-                "{courseName}",
-                "A {courseName}",
-                "Al corso di {courseName}"
-              ]
-            }
-          ],
-          "samples": [
-            "Aggiungi {courseName} ai corsi che seguo",
-            "Metti tra i corsi che seguo {courseName}",
-            "Iscrivimi a {courseName}",
-            "Iscrivimi al corso di {courseName}"
-          ]
-        },
-        {
-          "name": "RemoveSubscribeCourseIntent",
-          "slots": [
-            {
-              "name": "courseName",
-              "type": "ClassNames"
-            }
-          ],
-          "samples": [
-            "Togli {courseName} dai miei corsi",
-            "Disiscrivimi da {courseName}",
-            "Elimina {courseName} dai corsi che seguo",
-            "Non seguire più {courseName}",
-            "Smetti di seguire {courseName}",
-            "Dai corsi che seguo elimina il corso di {courseName}",
-            "Rimuovi {courseName} dai corsi che seguo"
-          ]
-        },
-        {
-          "name": "ResolveClass",
-          "slots": [
-            {
-              "name": "courseName",
-              "type": "ClassNames"
-            }
-          ],
-          "samples": [
-            "Identifica il corso di {courseName}"
-          ]
         }
       ],
       "types": [
         {
           "values": [
             {
+              "id": "—-",
               "name": {
-                "value": "-"
+                "value": "—"
               }
             }
           ],
           "name": "ClassNames"
         }
       ]
-    },
-    "dialog": {
-      "intents": [
-        {
-          "name": "SetSubscribeCourseIntent",
-          "confirmationRequired": false,
-          "prompts": {},
-          "slots": [
-            {
-              "name": "courseName",
-              "type": "ClassNames",
-              "elicitationRequired": true,
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.527967830818.964938621522"
-              }
-            }
-          ]
-        }
-      ],
-      "delegationStrategy": "ALWAYS"
-    },
-    "prompts": [
-      {
-        "id": "Elicit.Slot.527967830818.964938621522",
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "A quale corso vuoi iscriverti?"
-          }
-        ]
-      }
-    ]
+    }
   },
-  "version": "21"
+  "version": "34"
 }
