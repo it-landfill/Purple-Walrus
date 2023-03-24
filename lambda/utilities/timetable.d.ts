@@ -41,6 +41,13 @@ export declare module Timetable {
         };
     };
     /**
+     * THis represents a timetable split by days
+     */
+    type TimetableEntry = {
+        date: string;
+        classes: ClassDetails[];
+    };
+    /**
      * Queries the university calendar and returns the list of all the courses matching the specified criterias
      * @param year Example: "2"
      * @param curricula Example: "A58-000"
@@ -59,7 +66,7 @@ export declare module Timetable {
      * @param {Date} [end] The end date of the timetable (if omitted it will be one week from now)
      * @return {*}  {(Promise < ClassDetails[] | undefined >)} The timetable
      */
-    function getTimetableFromClassList(classes: string[], start?: Date, end?: Date): Promise<ClassDetails[] | undefined>;
+    function getTimetableFromClassList(classes: string[], start?: Date, end?: Date): Promise<TimetableEntry[] | undefined>;
     /**
      * Returns the available classes for the current year.
      * The classes are either loadaed from the database or fetched from the university website if not present or to old.

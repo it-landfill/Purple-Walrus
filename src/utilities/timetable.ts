@@ -50,6 +50,14 @@ export module Timetable {
 	};
 
 	/**
+	 * THis represents a timetable split by days
+	 */
+	export type TimetableEntry = {
+		date: string;
+		classes: ClassDetails[];
+	};
+
+	/**
 	 * Queries the university calendar and returns the list of all the courses matching the specified criterias
 	 * @param year Example: "2"
 	 * @param curricula Example: "A58-000"
@@ -126,7 +134,7 @@ export module Timetable {
 	 * @param {Date} [end] The end date of the timetable (if omitted it will be one week from now)
 	 * @return {*}  {(Promise < ClassDetails[] | undefined >)} The timetable
 	 */
-	export async function getTimetableFromClassList(classes : string[], start? : Date, end? : Date): Promise < ClassDetails[] | undefined > {
+	export async function getTimetableFromClassList(classes : string[], start? : Date, end? : Date): Promise < TimetableEntry[] | undefined > {
 		// Since the university calendar only allows to query by year and curriculum, we need to divide the classes by year and curriculum.
 		let queryQueue: {
 			[key: string]: {
@@ -180,7 +188,7 @@ export module Timetable {
 			}
 		}
 
-		return timetable;
+		return sortTimetable(timetable);
 	}
 
 	/**
@@ -463,5 +471,40 @@ export module Timetable {
 		}
 
 		return;
+	}
+
+	function sortTimetable(classList: ClassDetails[]): TimetableEntry[] {
+		let timetable: TimetableEntry[] = [];
+
+		// Loop the classes and add them to the timetable
+		for (let classObj of classList) {
+			// If the date already exists, add the class to the existing date, otherwise create a new date
+			const date = classObj.start.split("T")[0];
+			let dateObj = timetable.find((obj) => obj.date === date);
+			if (dateObj === undefined) {
+				dateObj = {
+					date: date,
+					classes: []
+				};
+				timetable.push(dateObj);
+			}
+			dateObj.classes.push(classObj);
+		}
+
+		// Sort the classes by start time in each timetable
+		for (let dateObj of timetable) {
+			dateObj.classes.sort((a, b) => {
+				const aStart = new Date(a.start);
+				const bStart = new Date(b.start);
+				return aStart.getTime() - bStart.getTime();
+			});
+		}
+
+		// Sort the timetables by date
+		timetable.sort((a, b) => {
+			return new Date(a.date).getTime() - new Date(b.date).getTime();
+		});
+
+		return timetable;	
 	}
 }

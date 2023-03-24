@@ -63,13 +63,24 @@ exports.GetScheduleIntentHander = {
         // ---- Schedule generation ----
         const timetable = await timetable_1.Timetable.getTimetableFromClassList(courseIDList, start, end);
         // Print the schedule
-        customLogger_1.CustomLogger.info(timetable);
+        customLogger_1.CustomLogger.verbose("Schedule: " + JSON.stringify(timetable));
         // ---- Response ----
+        //TODO: Only say day and month
+        //TODO: If day is today or tomorrow say today or tomorrow
         let speakOutput = "";
         if (timetable && timetable.length > 0) {
-            speakOutput += "Il giorno " + start.toISOString().split("T")[0] + " hai le seguenti lezioni:";
+            const verbose = timetable.length === 1;
             timetable.forEach((element) => {
-                speakOutput += ` ${slotUtils_1.SlotUtils.cleanClassName(element.title)[0]} alle ${element.start.split("T")[1]} in ${element.aula.edificio},`;
+                if (element.classes.length > 0) {
+                    const ts = new Date(element.date);
+                    speakOutput += "Il giorno " + ts.toISOString().split("T")[0] + " hai " + (element.classes.length === 1 ? "la seguente lezione: " : "le seguenti lezioni: ");
+                    element.classes.forEach((classElement) => {
+                        if (verbose)
+                            speakOutput += "dalle " + classElement.start.split("T")[1] + " alle " + classElement.end.split("T")[1] + " " + slotUtils_1.SlotUtils.cleanClassName(classElement.title)[0] + " in " + classElement.aula.edificio + ", ";
+                        else
+                            speakOutput += "alle " + classElement.start.split("T")[1] + " " + slotUtils_1.SlotUtils.cleanClassName(classElement.title)[0] + ", ";
+                    });
+                }
             });
         }
         return handlerInput.responseBuilder.speak(speakOutput).reprompt("La skill è in ascolto").getResponse();

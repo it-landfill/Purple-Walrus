@@ -9,7 +9,12 @@
         },
         {
           "name": "AMAZON.HelpIntent",
-          "samples": []
+          "samples": [
+            "che comandi posso darti",
+            "cosa puoi fare",
+            "cosa posso chiederti",
+            "cosa posso fare"
+          ]
         },
         {
           "name": "AMAZON.StopIntent",
@@ -49,7 +54,7 @@
           ]
         },
         {
-          "name": "GetWeeklyScheduleIntent",
+          "name": "GetScheduleIntent",
           "slots": [
             {
               "name": "timespan",
@@ -160,5 +165,5 @@
       }
     ]
   },
-  "version": "39"
+  "version": "41"
 }
