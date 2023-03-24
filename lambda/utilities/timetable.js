@@ -119,7 +119,7 @@ var Timetable;
                 timetable = timetable.concat(await getTimetable(year, curriculum, start, end, classes));
             }
         }
-        return timetable;
+        return sortTimetable(timetable);
     }
     Timetable.getTimetableFromClassList = getTimetableFromClassList;
     /**
@@ -373,4 +373,34 @@ var Timetable;
         return;
     }
     Timetable.generateDynamicClassEntries = generateDynamicClassEntries;
+    function sortTimetable(classList) {
+        let timetable = [];
+        // Loop the classes and add them to the timetable
+        for (let classObj of classList) {
+            // If the date already exists, add the class to the existing date, otherwise create a new date
+            const date = classObj.start.split("T")[0];
+            let dateObj = timetable.find((obj) => obj.date === date);
+            if (dateObj === undefined) {
+                dateObj = {
+                    date: date,
+                    classes: []
+                };
+                timetable.push(dateObj);
+            }
+            dateObj.classes.push(classObj);
+        }
+        // Sort the classes by start time in each timetable
+        for (let dateObj of timetable) {
+            dateObj.classes.sort((a, b) => {
+                const aStart = new Date(a.start);
+                const bStart = new Date(b.start);
+                return aStart.getTime() - bStart.getTime();
+            });
+        }
+        // Sort the timetables by date
+        timetable.sort((a, b) => {
+            return new Date(a.date).getTime() - new Date(b.date).getTime();
+        });
+        return timetable;
+    }
 })(Timetable = exports.Timetable || (exports.Timetable = {}));

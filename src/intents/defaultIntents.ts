@@ -28,6 +28,7 @@ export const LaunchRequestHandler = {
 		// Get persistent attributes to check if the user is subscribed to any course no longer available.
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 		if (sessionAttributes.materie !== undefined) {
+			let listCoursePopped = [];
 			const courseAvailable = await Timetable.getClassesList();
 			if (courseAvailable) {
 				// For each course, check if the course is in the course list
@@ -36,11 +37,19 @@ export const LaunchRequestHandler = {
 						// Pop the course from the list
 						const popCourse = sessionAttributes.materie.pop();
 						CustomLogger.verbose("Course " + popCourse + " is not available anymore. Removing it from the list.");
+						listCoursePopped.push(popCourse);
 					}
 				}
 			}
-		}
+			if(listCoursePopped.length > 0){
+				const repeat = "Come posso aiutarti?";
+				// TODO: listCoursePopped is an array of course ids. We need to get the course name from the id?
+				const poppedCourseInfo = "Dall'ultima sessione sono stati rimossi i seguenti corsi perchè non più disponibili: " + listCoursePopped.join(", ") + ". ";
+				const speech = "Benvenuto in Orari Università. " + poppedCourseInfo + repeat;
 
+				return handlerInput.responseBuilder.speak(speech).reprompt(repeat).addDirective(replaceEntityDirective).getResponse();
+			}
+		}
 
 		const repeat = "Come posso aiutarti?";
 		const speech = "Benvenuto in Orari Università. " + repeat;
@@ -58,7 +67,8 @@ export const HelpIntentHandler = {
 		);
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
-		const speakOutput = "You can say hello to me! How can I help?";
+		const repeat = "Come posso aiutarti?";
+		const speakOutput = "La skill orari università ti permette di sapere gli orari delle lezioni del corso di informatica magistrale di Bologna. Ad esempio, puoi chiedermi gli orari di una lezione, oppure di aggiungere una lezione alla tua lista dei corsi che segui. " + repeat;
 
 		return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
 	}
