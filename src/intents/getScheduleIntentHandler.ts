@@ -2,6 +2,7 @@ import Alexa = require("ask-sdk-core");
 import {Timetable} from "../utilities/timetable";
 import {CustomLogger} from "../utilities/customLogger";
 import {SlotUtils} from "../utilities/slotUtils";
+import { Utils } from "../utilities/utils";
 
 // "Leggi il calendario"
 export const GetScheduleIntentHander = {
@@ -73,16 +74,14 @@ export const GetScheduleIntentHander = {
 		CustomLogger.verbose("Schedule: " + JSON.stringify(timetable) );
 
 		// ---- Response ----
-		
-		//TODO: Only say day and month
-		//TODO: If day is today or tomorrow say today or tomorrow
 		let speakOutput: string = "";
 		if (timetable && timetable.length > 0) {
 			const verbose = timetable.length === 1;
 			timetable.forEach((element : Timetable.TimetableEntry) => {
 				if (element.classes.length > 0) {
+					CustomLogger.verbose("Element: " + JSON.stringify(element));
 					const ts = new Date(element.date); 
-					speakOutput += "Il giorno " + ts.toISOString().split("T")[0] + " hai " + (element.classes.length === 1 ? "la seguente lezione: " : "le seguenti lezioni: ");
+					speakOutput +=  Utils.formatDateForSpeach(ts) + " hai " + (element.classes.length === 1 ? "la seguente lezione: " : "le seguenti lezioni: ");
 					element.classes.forEach((classElement : Timetable.ClassDetails) => {
 						if (verbose)
 							speakOutput += "dalle " + classElement.start.split("T")[1] + " alle " + classElement.end.split("T")[1] + " " + SlotUtils.cleanClassName(classElement.title)[0] + " in " + classElement.aula.edificio + ", ";
@@ -91,6 +90,13 @@ export const GetScheduleIntentHander = {
 					});
 				}
 			});
+		} else {
+			speakOutput = "Non è pianificata alcuna lezione per ";
+			CustomLogger.log("Start: " + start + " End: " + end);
+			if (start.toISOString().split("T")[0] === end.toISOString().split("T")[0]) 
+				speakOutput += Utils.formatDateForSpeach(start);
+			else 
+				speakOutput += "il periodo dal " + Utils.formatDateForSpeach(start) + " al " + Utils.formatDateForSpeach(end);
 		}
 
 		return handlerInput.responseBuilder.speak(speakOutput).reprompt("La skill è in ascolto").getResponse();

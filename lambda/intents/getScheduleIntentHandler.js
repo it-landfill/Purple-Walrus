@@ -5,6 +5,7 @@ const Alexa = require("ask-sdk-core");
 const timetable_1 = require("../utilities/timetable");
 const customLogger_1 = require("../utilities/customLogger");
 const slotUtils_1 = require("../utilities/slotUtils");
+const utils_1 = require("../utilities/utils");
 // "Leggi il calendario"
 exports.GetScheduleIntentHander = {
     canHandle(handlerInput) {
@@ -65,15 +66,14 @@ exports.GetScheduleIntentHander = {
         // Print the schedule
         customLogger_1.CustomLogger.verbose("Schedule: " + JSON.stringify(timetable));
         // ---- Response ----
-        //TODO: Only say day and month
-        //TODO: If day is today or tomorrow say today or tomorrow
         let speakOutput = "";
         if (timetable && timetable.length > 0) {
             const verbose = timetable.length === 1;
             timetable.forEach((element) => {
                 if (element.classes.length > 0) {
+                    customLogger_1.CustomLogger.verbose("Element: " + JSON.stringify(element));
                     const ts = new Date(element.date);
-                    speakOutput += "Il giorno " + ts.toISOString().split("T")[0] + " hai " + (element.classes.length === 1 ? "la seguente lezione: " : "le seguenti lezioni: ");
+                    speakOutput += utils_1.Utils.formatDateForSpeach(ts) + " hai " + (element.classes.length === 1 ? "la seguente lezione: " : "le seguenti lezioni: ");
                     element.classes.forEach((classElement) => {
                         if (verbose)
                             speakOutput += "dalle " + classElement.start.split("T")[1] + " alle " + classElement.end.split("T")[1] + " " + slotUtils_1.SlotUtils.cleanClassName(classElement.title)[0] + " in " + classElement.aula.edificio + ", ";
@@ -82,6 +82,14 @@ exports.GetScheduleIntentHander = {
                     });
                 }
             });
+        }
+        else {
+            speakOutput = "Non è pianificata alcuna lezione per ";
+            customLogger_1.CustomLogger.log("Start: " + start + " End: " + end);
+            if (start.toISOString().split("T")[0] === end.toISOString().split("T")[0])
+                speakOutput += utils_1.Utils.formatDateForSpeach(start);
+            else
+                speakOutput += "il periodo dal " + utils_1.Utils.formatDateForSpeach(start) + " al " + utils_1.Utils.formatDateForSpeach(end);
         }
         return handlerInput.responseBuilder.speak(speakOutput).reprompt("La skill è in ascolto").getResponse();
     }

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Util = void 0;
+exports.Utils = void 0;
 const AWS = require("aws-sdk");
 const s3SigV4Client = new AWS.S3({ signatureVersion: "v4", region: process.env.S3_PERSISTENCE_REGION });
-var Util;
-(function (Util) {
+var Utils;
+(function (Utils) {
     function getS3PreSignedUrl(s3ObjectKey) {
         const bucketName = process.env.S3_PERSISTENCE_BUCKET;
         const s3PreSignedUrl = s3SigV4Client.getSignedUrl("getObject", {
@@ -15,4 +15,9 @@ var Util;
         console.log(`Util.s3PreSignedUrl: ${s3ObjectKey} URL ${s3PreSignedUrl}`);
         return s3PreSignedUrl;
     }
-})(Util = exports.Util || (exports.Util = {}));
+    function formatDateForSpeach(date) {
+        let outString = "";
+        return outString;
+    }
+    Utils.formatDateForSpeach = formatDateForSpeach;
+})(Utils = exports.Utils || (exports.Utils = {}));
