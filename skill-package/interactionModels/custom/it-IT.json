@@ -9,7 +9,12 @@
         },
         {
           "name": "AMAZON.HelpIntent",
-          "samples": []
+          "samples": [
+            "che comandi posso darti",
+            "cosa puoi fare",
+            "cosa posso chiederti",
+            "cosa posso fare"
+          ]
         },
         {
           "name": "AMAZON.StopIntent",
@@ -49,7 +54,7 @@
           ]
         },
         {
-          "name": "GetWeeklyScheduleIntent",
+          "name": "GetScheduleIntent",
           "slots": [
             {
               "name": "timespan",
@@ -75,26 +80,6 @@
           ]
         },
         {
-          "name": "SetSubscribeCourseIntent",
-          "slots": [
-            {
-              "name": "courseName",
-              "type": "ClassNames",
-              "samples": [
-                "{courseName}",
-                "A {courseName}",
-                "Al corso di {courseName}"
-              ]
-            }
-          ],
-          "samples": [
-            "Aggiungi {courseName} ai corsi che seguo",
-            "Metti tra i corsi che seguo {courseName}",
-            "Iscrivimi a {courseName}",
-            "Iscrivimi al corso di {courseName}"
-          ]
-        },
-        {
           "name": "RemoveSubscribeCourseIntent",
           "slots": [
             {
@@ -113,15 +98,23 @@
           ]
         },
         {
-          "name": "ResolveClass",
+          "name": "SetSubscribeCourseIntent",
           "slots": [
             {
               "name": "courseName",
-              "type": "ClassNames"
+              "type": "ClassNames",
+              "samples": [
+                "Al corso di {courseName}",
+                "A {courseName}",
+                "{courseName}"
+              ]
             }
           ],
           "samples": [
-            "Identifica il corso di {courseName}"
+            "Iscrivimi al corso di {courseName}",
+            "Iscrivimi a {courseName}",
+            "Metti tra i corsi che seguo {courseName}",
+            "Aggiungi {courseName} ai corsi che seguo"
           ]
         }
       ],
@@ -129,24 +122,9 @@
         {
           "values": [
             {
-              "id": "2022-000-379870--I",
+              "id": "—-",
               "name": {
-                "value": "computer vision"
-              }
-            },
-            {
-              "id": "2022-000-343110--I",
-              "name": {
-                "value": "internet of things",
-                "synonyms": [
-                  "I.o.t"
-                ]
-              }
-            },
-            {
-              "id": "2022-000-380902--I",
-              "name": {
-                "value": "business intelligence"
+                "value": "—"
               }
             }
           ],
@@ -167,14 +145,8 @@
               "elicitationRequired": true,
               "confirmationRequired": false,
               "prompts": {
-                "elicitation": "Elicit.Slot.527967830818.964938621522"
-              },
-              "validations": [
-                {
-                  "type": "hasEntityResolutionMatch",
-                  "prompt": "Slot.Validation.527967830818.964938621522.621409929057"
-                }
-              ]
+                "elicitation": "Elicit.Slot.1038327326023.535870990403"
+              }
             }
           ]
         }
@@ -183,20 +155,7 @@
     },
     "prompts": [
       {
-        "id": "Slot.Validation.527967830818.964938621522.621409929057",
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "Il corso {courseName} non è valido."
-          },
-          {
-            "type": "PlainText",
-            "value": "Il corso specificato non è valido."
-          }
-        ]
-      },
-      {
-        "id": "Elicit.Slot.527967830818.964938621522",
+        "id": "Elicit.Slot.1038327326023.535870990403",
         "variations": [
           {
             "type": "PlainText",
@@ -206,5 +165,5 @@
       }
     ]
   },
-  "version": "19"
+  "version": "41"
 }

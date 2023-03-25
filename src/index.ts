@@ -12,6 +12,7 @@ import {IntentsLorenzo} from "./intents/IntentsLorenzo";
 import {SetSubscribeCourseIntentHandler} from "./intents/setSubscribeCourseIntentHandler";
 import {GetSubscribeCourseIntentHandler} from "./intents/getSubscribeCourseIntentHandler";
 import {RemoveSubscribeCourseIntentHandler} from "./intents/removeSubscribeCourseIntentHandler";
+import { GetScheduleIntentHander } from "./intents/getScheduleIntentHandler";
 
 // Error handlers
 import {ErrorHandler} from "./errors/baseErrorHandler";
@@ -24,6 +25,8 @@ import {LoadDataInterceptor} from "./interceptors/loadDataInterceptor";
 
 // Utilities
 import {DbUtils} from "./utilities/dbUtils";
+import {CustomLogger} from "./utilities/customLogger";
+CustomLogger.info("Starting Purple Walrus handler");
 
 /**
  * This handler acts as the entry point for your skill, routing all request and response
@@ -32,7 +35,8 @@ import {DbUtils} from "./utilities/dbUtils";
  * */
 exports.handler = Alexa.SkillBuilders.custom().addRequestHandlers(
 	IntentsAlessandro.HelloWorldIntentHandler,
-	IntentsLorenzo.GetWeeklyScheduleIntentHander,
+	//IntentsLorenzo.GetWeeklyScheduleIntentHander,
+	GetScheduleIntentHander,
 	RemoveSubscribeCourseIntentHandler,
 	SetSubscribeCourseIntentHandler,
 	GetSubscribeCourseIntentHandler,
