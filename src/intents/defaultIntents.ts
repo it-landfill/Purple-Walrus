@@ -28,7 +28,7 @@ export const LaunchRequestHandler = {
 		// Get persistent attributes to check if the user is subscribed to any course no longer available.
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 		if (sessionAttributes.materie !== undefined) {
-			let listCoursePopped = [];
+			let coursePopped = false;
 			const courseAvailable = await Timetable.getClassesList();
 			if (courseAvailable) {
 				// For each course, check if the course is in the course list
@@ -36,15 +36,16 @@ export const LaunchRequestHandler = {
 					if (!(course in courseAvailable)) {
 						// Pop the course from the list
 						const popCourse = sessionAttributes.materie.pop();
-						CustomLogger.verbose("Course " + popCourse + " is not available anymore. Removing it from the list.");
-						listCoursePopped.push(popCourse);
+						CustomLogger.verbose(
+							"Course " + popCourse + " is not available anymore. Removing it from the list."
+						);
+						coursePopped = true;
 					}
 				}
 			}
-			if(listCoursePopped.length > 0){
+			if (coursePopped) {
 				const repeat = "Come posso aiutarti?";
-				// TODO: listCoursePopped is an array of course ids. We need to get the course name from the id?
-				const poppedCourseInfo = "Dall'ultima sessione sono stati rimossi i seguenti corsi perchè non più disponibili: " + listCoursePopped.join(", ") + ". ";
+				const poppedCourseInfo = "Dall'ultima sessione sono stati rimossi alcuni corsi perchè non più disponibili. ";
 				const speech = "Benvenuto in Orari Università. " + poppedCourseInfo + repeat;
 
 				return handlerInput.responseBuilder.speak(speech).reprompt(repeat).addDirective(replaceEntityDirective).getResponse();
@@ -87,9 +88,10 @@ export const CancelAndStopIntentHandler = {
 	}
 };
 
-/*  * FallbackIntent triggers when a customer says something that doesn’t map to any intents in your skill It must also be defined in the language mod
- *  el (if the locale supports it) This handler can be safely added but will be ingnored in locales that do not support it yet
-
+/**
+ *	FallbackIntent triggers when a customer says something that doesn’t map to any intents in your skill It must also be
+ *	defined in the language model (if the locale supports it) This handler can be safely added but will be ingnored in
+ *	locales that do not support it yet
  */
 export const FallbackIntentHandler = {
 	canHandle(handlerInput : Alexa.HandlerInput) {
@@ -98,16 +100,17 @@ export const FallbackIntentHandler = {
 		);
 	},
 	handle(handlerInput : Alexa.HandlerInput) {
-		const speakOutput = "Sorry, I don't know about that. Please try again.";
-
+		const speakOutput = "Mi dispiace, ma quello che mi hai chiesto non è al momento supportato. Puoi chiedermi gli orari di una lezione, oppure di aggiungere o eliminare corsi dalla tua lista dei corsi che segui. Posso aiutarti in qualche altro modo?";
 		return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse();
 	}
 };
 
-/*  * SessionEndedRequest notifies that a session was ended. This handler will be triggered when a currently open session is closed for one of the fol
- *  lowing reasons: 1) The user says "exit" or "quit". 2) The user does not respond or says something that does not match an intent defined in your vo
- * i ce model. 3) An error occurs
-
+/**
+ * SessionEndedRequest notifies that a session was ended. This handler will be triggered when a currently open session is closed
+ * for one of the following reasons:
+ * 1) The user says "exit" or "quit".
+ * 2) The user does not respond or says something that does not match an intent defined in your voice model.
+ * 3) An error occurs
  */
 export const SessionEndedRequestHandler = {
 	canHandle(handlerInput : Alexa.HandlerInput) {
@@ -125,9 +128,9 @@ export const SessionEndedRequestHandler = {
 	}
 };
 
-/*  * The intent reflector is used for interaction model testing and debugging. It will simply repeat the intent the user said. You can create custom
- * handlers for your intents by defining them above, then also adding them to the request handler chain below
-
+/**
+ * The intent reflector is used for interaction model testing and debugging. It will simply repeat the intent the user said.
+ * You can create custom handlers for your intents by defining them above, then also adding them to the request handler chain below
  */
 export const IntentReflectorHandler = {
 	canHandle(handlerInput : Alexa.HandlerInput) {
